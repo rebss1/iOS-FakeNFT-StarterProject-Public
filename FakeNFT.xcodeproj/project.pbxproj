@@ -44,7 +44,6 @@
 		558E39E72C68CE0A00FB86AC /* NftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558E39E62C68CE0900FB86AC /* NftService.swift */; };
 		941EB6312CBBCE2E00A93958 /* ShoppingCartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941EB6302CBBCE1F00A93958 /* ShoppingCartViewController.swift */; };
 		941EB6352CBBCE7500A93958 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941EB6342CBBCE6D00A93958 /* ProfileViewController.swift */; };
-		941EB6442CBC104F00A93958 /* UIview+edgesToSuperview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941EB6412CBC104F00A93958 /* UIview+edgesToSuperview.swift */; };
 		941EB6452CBC104F00A93958 /* UIView+parentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941EB6422CBC104F00A93958 /* UIView+parentViewController.swift */; };
 		941EB6462CBC104F00A93958 /* UIView+addSubviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941EB6402CBC104F00A93958 /* UIView+addSubviews.swift */; };
 		941EB6472CBC104F00A93958 /* UIViewController+wrapWithNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941EB6432CBC104F00A93958 /* UIViewController+wrapWithNavigationController.swift */; };
@@ -113,7 +112,6 @@
 		941EB6302CBBCE1F00A93958 /* ShoppingCartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCartViewController.swift; sourceTree = "<group>"; };
 		941EB6342CBBCE6D00A93958 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		941EB6402CBC104F00A93958 /* UIView+addSubviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+addSubviews.swift"; sourceTree = "<group>"; };
-		941EB6412CBC104F00A93958 /* UIview+edgesToSuperview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIview+edgesToSuperview.swift"; sourceTree = "<group>"; };
 		941EB6422CBC104F00A93958 /* UIView+parentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+parentViewController.swift"; sourceTree = "<group>"; };
 		941EB6432CBC104F00A93958 /* UIViewController+wrapWithNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+wrapWithNavigationController.swift"; sourceTree = "<group>"; };
 		941EB6482CBC10AB00A93958 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
@@ -379,7 +377,6 @@
 				3F478ECE29DB474E00F6D39E /* Colors.swift */,
 				3F478ED029DB476500F6D39E /* Fonts.swift */,
 				941EB6402CBC104F00A93958 /* UIView+addSubviews.swift */,
-				941EB6412CBC104F00A93958 /* UIview+edgesToSuperview.swift */,
 				941EB6422CBC104F00A93958 /* UIView+parentViewController.swift */,
 				941EB6432CBC104F00A93958 /* UIViewController+wrapWithNavigationController.swift */,
 			);
@@ -569,7 +566,6 @@
 				3F6806D529CBBEC700B4F915 /* NetworkTask.swift in Sources */,
 				0CF2C2DB2A783C1B00FDC837 /* LoadingView.swift in Sources */,
 				558E39E72C68CE0A00FB86AC /* NftService.swift in Sources */,
-				941EB6442CBC104F00A93958 /* UIview+edgesToSuperview.swift in Sources */,
 				941EB6452CBC104F00A93958 /* UIView+parentViewController.swift in Sources */,
 				941EB64A2CBC10AB00A93958 /* TextField.swift in Sources */,
 				941EB64B2CBC10AB00A93958 /* Button.swift in Sources */,
