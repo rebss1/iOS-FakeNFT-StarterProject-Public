@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Dark-1 1.png",
+      "filename" : "basketActive.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Dark-1.png",
+      "filename" : "basketActive@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Dark.png",
+      "filename" : "basketActive@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
@@ -19,8 +19,5 @@
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "template-rendering-intent" : "template"
   }
 }
