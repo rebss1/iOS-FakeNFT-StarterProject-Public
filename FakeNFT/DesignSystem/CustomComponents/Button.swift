@@ -19,22 +19,9 @@ final class Button: UIButton {
     
     var style: ButtonStyle = .normal
     
-    var color: UIColor = .ypBlack {
+    var color: UIColor = .blackCustom {
         didSet {
             backgroundColor = color
-        }
-    }
-    
-    var disabledColor: UIColor = .ypGrey
-    
-    override var isEnabled: Bool {
-        didSet {
-            if isEnabled {
-                backgroundColor = color
-            } else {
-                backgroundColor = disabledColor
-                layer.borderColor = disabledColor.cgColor
-            }
         }
     }
     
@@ -56,14 +43,13 @@ final class Button: UIButton {
     }
     
     private func setUp() {
-        backgroundColor = style == .flat ? .ypWhite : color
-        setTitleColor(style == .flat ? color : .ypWhite, for: .normal)
+        backgroundColor = style == .flat ? .whiteCustom : color
+        setTitleColor(style == .flat ? color : .whiteCustom, for: .normal)
         addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
         layer.cornerRadius = 16
         layer.borderWidth = 1
-        layer.borderColor = isEnabled ? color.cgColor : UIColor.ypWhite.cgColor
+        layer.borderColor = isEnabled ? color.cgColor : UIColor.whiteCustom.cgColor
         translatesAutoresizingMaskIntoConstraints = false
-        heightAnchor.constraint(equalToConstant: 60).isActive = true
     }
     
     @objc private func didTapButton() {
