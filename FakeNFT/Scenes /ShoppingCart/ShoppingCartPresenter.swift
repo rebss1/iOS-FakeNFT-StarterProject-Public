@@ -8,5 +8,10 @@
 import Foundation
 
 final class ShoppingCartPresenter {
+    let servicesAssembly: ServicesAssembly
     
+    init(servicesAssembly: ServicesAssembly) {
+        self.servicesAssembly = servicesAssembly
+    }
+    //TODO: Реализовать загрузку данных из сети
 }

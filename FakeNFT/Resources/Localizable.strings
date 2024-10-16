@@ -7,3 +7,12 @@
 "Error.repeat" = "Повторить";
 "Error.title" = "Ошибка";
 "Cart.pay" = "К оплате";
+"Cart.price" = "Цена";
+"DeleteScreen.title" = "Вы уверены, что хотите удалить объект из корзины?";
+"DeleteScreen.delete" = "Удалить";
+"DeleteScreen.back" = "Вернуться";
+"Cart.sort" = "Сортировка";
+"Cart.byPrice" = "По цене";
+"Cart.byRaiting" = "По рейтингу";
+"Cart.byName" = "По названию";
+"Cart.close" = "Закрыть";

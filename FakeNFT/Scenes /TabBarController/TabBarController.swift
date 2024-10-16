@@ -22,9 +22,7 @@ final class TabBarController: UITabBarController {
         let catalogViewController = CatalogViewController(
             servicesAssembly: servicesAssembly
         )
-        let shoppingCartViewController = ShoppingCartViewController(
-            servicesAssembly: servicesAssembly
-        )
+        let shoppingCartViewController = ShoppingCartViewController()
         let profileViewController = ProfileViewController(
             servicesAssembly: servicesAssembly
         )
