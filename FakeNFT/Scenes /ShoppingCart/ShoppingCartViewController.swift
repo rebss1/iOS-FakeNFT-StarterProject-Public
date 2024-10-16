@@ -43,15 +43,15 @@ final class ShoppingCartViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-//    let sortButton: UIButton = {
-//        let button = UIButton(type: .system)
-//        button.translatesAutoresizingMaskIntoConstraints = false
-//        button.setImage(UIImage(named: "sort"), for: .normal)
-//        button.tintColor = UIColor.blackCustom
-//        button.widthAnchor.constraint(equalToConstant: 44).isActive = true
-//        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
-//        return button
-//    }()
+    let sortButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(named: "sort"), for: .normal)
+        button.tintColor = UIColor.blackCustom
+        button.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        return button
+    }()
     
     
     init(servicesAssembly: ServicesAssembly) {
@@ -70,7 +70,7 @@ final class ShoppingCartViewController: UIViewController {
         setupButton()
         setupCountNFT()
         setupPriceNFT()
-//        setupSortButton()
+        setupSortButton()
 //        setupTableView()
     }
     
@@ -101,11 +101,11 @@ final class ShoppingCartViewController: UIViewController {
         priceNFTLabel.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -16).isActive = true
         priceNFTLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16).isActive = true
     }
-//    private func setupSortButton() {
-//        view.addSubview(sortButton)
-//        sortButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-//        sortButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -7).isActive = true
-//    }
+    private func setupSortButton() {
+        view.addSubview(sortButton)
+        sortButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        sortButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -7).isActive = true
+    }
 //    private func setupTableView() {
 //        view.addSubview(tableView)
 //        tableView.frame = self.view.bounds
