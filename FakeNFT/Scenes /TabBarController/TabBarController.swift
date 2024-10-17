@@ -25,9 +25,7 @@ final class TabBarController: UITabBarController {
         let shoppingCartViewController = ShoppingCartViewController(
             servicesAssembly: servicesAssembly
         )
-        let profileViewController = ProfileViewController(
-            servicesAssembly: servicesAssembly
-        )
+        let profileViewController = initProfileTabBarViewController(servicesAssembly)
         
         catalogViewController.tabBarItem = UITabBarItem(title: NSLocalizedString("Tab.catalog", comment: ""),
                                                         image: UIImage(named: "catalogNoActive"),
@@ -40,5 +38,11 @@ final class TabBarController: UITabBarController {
                                                       selectedImage: UIImage(named: "profileActive"))
         
         viewControllers = [profileViewController, catalogViewController, shoppingCartViewController]
+    }
+    
+    private func initProfileTabBarViewController(_ servicesAssembly: ServicesAssembly) -> UIViewController {
+        let vc = ProfileViewController(servicesAssembly: servicesAssembly)
+        let navVc = UINavigationController(rootViewController: vc)
+        return navVc
     }
 }
