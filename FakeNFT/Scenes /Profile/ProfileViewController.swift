@@ -9,7 +9,7 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
-    let servicesAssembly: ServicesAssembly
+    private let servicesAssembly: ServicesAssembly
 
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly

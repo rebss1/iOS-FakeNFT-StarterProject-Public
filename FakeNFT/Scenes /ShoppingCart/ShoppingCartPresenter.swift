@@ -8,7 +8,7 @@
 import Foundation
 
 final class ShoppingCartPresenter {
-    let servicesAssembly: ServicesAssembly
+    private let servicesAssembly: ServicesAssembly
     
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly

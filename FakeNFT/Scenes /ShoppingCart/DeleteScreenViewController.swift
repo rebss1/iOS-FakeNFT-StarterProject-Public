@@ -9,7 +9,7 @@ import UIKit
 
 final class DeleteScreenViewController: UIViewController {
 
-    var parentController: ShoppingCartViewController?
+    weak var parentController: ShoppingCartViewController?
     private var centerImage: UIImageView
     private let titleLabel = {
         let label = UILabel()

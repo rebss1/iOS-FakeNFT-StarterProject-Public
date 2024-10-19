@@ -7,9 +7,10 @@
 
 import UIKit
 
-class CartTableViewCell: UITableViewCell {
-    var parentController: ShoppingCartViewController?
-    let NFTImage = {
+final class CartTableViewCell: UITableViewCell {
+    
+    weak var parentController: ShoppingCartViewController?
+    private let NFTImage = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.layer.masksToBounds = true
@@ -17,13 +18,13 @@ class CartTableViewCell: UITableViewCell {
         image.image = UIImage(named: "shiba")// Mock данные, в дальшейшем заменятся на данные с сервера
         return image
     }()
-    let raitingImage = {
+    private let raitingImage = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.image = UIImage(named: "fiveStars") // Mock данные, в дальшейшем заменятся на данные с сервера
         return image
     }()
-    let nameLable = {
+    private let nameLable = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Name"
@@ -31,7 +32,7 @@ class CartTableViewCell: UITableViewCell {
         label.font = .boldSystemFont(ofSize: 17)
         return label
     }()
-    let priceLabel = {
+    private let priceLabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = NSLocalizedString("Cart.price", comment: "Цена")
@@ -39,7 +40,7 @@ class CartTableViewCell: UITableViewCell {
         label.font = .systemFont(ofSize: 13)
         return label
     }()
-    let countPriceLabel = {
+    private let countPriceLabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "0 ETH"
@@ -47,7 +48,7 @@ class CartTableViewCell: UITableViewCell {
         label.font = .boldSystemFont(ofSize: 17)
         return label
     }()
-    let deleteButton: UIButton = {
+    private let deleteButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "cartDelete"), for: .normal)
