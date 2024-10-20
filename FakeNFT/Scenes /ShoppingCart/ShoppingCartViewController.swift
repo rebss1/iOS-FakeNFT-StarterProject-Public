@@ -14,6 +14,9 @@ final class ShoppingCartViewController: UIViewController {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .lightGreyCustom
+        view.layer.masksToBounds = true
+        view.layer.cornerRadius = 12
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         return view
     }()
     let tableView = {
