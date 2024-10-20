@@ -7,23 +7,32 @@
 
 import UIKit
 
+protocol CatalogView: AnyObject, ErrorView, LoadingView {
+    func displayCells(_ cellModels: [CatalogCellModel])
+}
+
 final class CatalogViewController: UIViewController {
 
     // MARK: - Public Properties
-
-    let servicesAssembly: ServicesAssembly
+    
+    internal lazy var activityIndicator = UIActivityIndicatorView()
     
     // MARK: - Private Properties
 
     private lazy var collectionWidth = collectionView.frame.width
     
+    private let presenter: CatalogPresenter
+    private var cellModels: [CatalogCellModel] = []
+    
     // MARK: - UIViews
 
     private lazy var collectionView: UICollectionView = {
-        let collectionView = UICollectionView()
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero,
+                                              collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.register(CatalogCollectionCell.self, forCellWithReuseIdentifier: CatalogCollectionCell.identifier)
+        collectionView.register(CatalogCell.self)
         return collectionView
     }()
     
@@ -36,9 +45,12 @@ final class CatalogViewController: UIViewController {
         return button
     }()
     
+    //MARK: - Initializers
+    
     init(servicesAssembly: ServicesAssembly) {
-        self.servicesAssembly = servicesAssembly
+        self.presenter = CatalogPresenterImpl(servicesAssembly: servicesAssembly)
         super.init(nibName: nil, bundle: nil)
+        self.presenter.setView(self)
     }
 
     required init?(coder: NSCoder) {
@@ -50,6 +62,7 @@ final class CatalogViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
+        presenter.viewDidLoad()
     }
     
     // MARK: - Private Methods
@@ -57,11 +70,14 @@ final class CatalogViewController: UIViewController {
     private func setUp() {
         view.addSubviews([sortButton, collectionView])
         
+        collectionView.addSubview(activityIndicator)
+        activityIndicator.constraintCenters(to: collectionView)
+        
         NSLayoutConstraint.activate([
             sortButton.widthAnchor.constraint(equalToConstant: 42),
             sortButton.heightAnchor.constraint(equalToConstant: 42),
             sortButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 2),
-            sortButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 9),
+            sortButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -9),
             
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
@@ -76,16 +92,23 @@ final class CatalogViewController: UIViewController {
     }
 }
 
+// MARK: - UICollectionViewDataSource
+
 extension CatalogViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
+        cellModels.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
+        let cell: CatalogCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+        let cellModel = cellModels[indexPath.row]
+        cell.configure(with: cellModel)
+        return cell
     }
 }
+
+// MARK: - UICollectionViewDelegateFlowLayout
 
 extension CatalogViewController: UICollectionViewDelegateFlowLayout {
     
@@ -117,4 +140,14 @@ extension CatalogViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         minimumLineSpacingForSectionAt section: Int
     ) -> CGFloat { 8 }
+}
+
+// MARK: - CatalogView
+
+extension CatalogViewController: CatalogView {
+
+    func displayCells(_ cellModels: [CatalogCellModel]) {
+        self.cellModels = cellModels
+        collectionView.reloadData()
+    }
 }
