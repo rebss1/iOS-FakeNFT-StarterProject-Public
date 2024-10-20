@@ -22,6 +22,9 @@ final class CatalogPresenterImpl {
     
     //MARK: - Private properties
     
+    private var sortedCollections: [NftCollection] = []
+    private var collections: [NftCollection] = []
+    
     weak var view: CatalogView?
     private let services: ServicesAssembly
     private var state = CatalogPresenterState.initial {
@@ -45,9 +48,10 @@ final class CatalogPresenterImpl {
         case .loading:
             view?.showLoading()
             loadCollections()
-        case .data(let collection):
+        case .data(let collections):
             view?.hideLoading()
-            let cellModels = collection.map {
+            self.collections = collections
+            let cellModels = collections.map {
                 CatalogCellModel(title: $0.name,
                                  size: $0.nfts.count,
                                  cover: $0.cover)
@@ -85,6 +89,16 @@ final class CatalogPresenterImpl {
             self?.state = .loading
         }
     }
+    
+    private func sortCollections(by type: CatalogSortType) {
+        switch type {
+        case .name:
+            sortedCollections = collections.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        case .nftsQuantity:
+            sortedCollections = collections.sorted { $0.nfts.count > $1.nfts.count }
+        }
+        self.state = .data(sortedCollections)
+    }
 }
 
 extension CatalogPresenterImpl: CatalogPresenter {
@@ -100,7 +114,7 @@ extension CatalogPresenterImpl: CatalogPresenter {
                 title: NSLocalizedString("Sort.byName", comment: ""),
                 style: .default
             ) { [weak self] _ in
-                
+                self?.sortCollections(by: .name)
             }
         )
         alertView.addAction(
@@ -108,7 +122,7 @@ extension CatalogPresenterImpl: CatalogPresenter {
                 title: NSLocalizedString("Sort.byCount", comment: ""),
                 style: .default
             ) { [weak self] _ in
-                
+                self?.sortCollections(by: .nftsQuantity)
             }
         )
         alertView.addAction(
