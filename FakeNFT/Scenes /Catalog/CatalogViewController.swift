@@ -88,7 +88,34 @@ final class CatalogViewController: UIViewController {
     
     @objc
     private func didTapSortButton() {
-        
+        let alertView = UIAlertController(
+            title: NSLocalizedString("Sort.title", comment: ""),
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        alertView.addAction(
+            UIAlertAction(
+                title: NSLocalizedString("Sort.byName", comment: ""),
+                style: .default
+            ) { [weak self] _ in
+                
+            }
+        )
+        alertView.addAction(
+            UIAlertAction(
+                title: NSLocalizedString("Sort.byCount", comment: ""),
+                style: .default
+            ) { [weak self] _ in
+                
+            }
+        )
+        alertView.addAction(
+            UIAlertAction(
+                title: NSLocalizedString("Sort.cancel", comment: ""),
+                style: .cancel
+            )
+        )
+        present(alertView, animated: true)
     }
 }
 
