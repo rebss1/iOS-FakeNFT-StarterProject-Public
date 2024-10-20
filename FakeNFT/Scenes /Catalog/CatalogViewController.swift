@@ -9,6 +9,7 @@ import UIKit
 
 protocol CatalogView: AnyObject, ErrorView, LoadingView {
     func displayCells(_ cellModels: [CatalogCellModel])
+    func displayAlert(_ alert: UIAlertController)
 }
 
 final class CatalogViewController: UIViewController {
@@ -88,34 +89,7 @@ final class CatalogViewController: UIViewController {
     
     @objc
     private func didTapSortButton() {
-        let alertView = UIAlertController(
-            title: NSLocalizedString("Sort.title", comment: ""),
-            message: nil,
-            preferredStyle: .actionSheet
-        )
-        alertView.addAction(
-            UIAlertAction(
-                title: NSLocalizedString("Sort.byName", comment: ""),
-                style: .default
-            ) { [weak self] _ in
-                
-            }
-        )
-        alertView.addAction(
-            UIAlertAction(
-                title: NSLocalizedString("Sort.byCount", comment: ""),
-                style: .default
-            ) { [weak self] _ in
-                
-            }
-        )
-        alertView.addAction(
-            UIAlertAction(
-                title: NSLocalizedString("Sort.cancel", comment: ""),
-                style: .cancel
-            )
-        )
-        present(alertView, animated: true)
+        presenter.didTapSortButton()
     }
 }
 
@@ -172,6 +146,10 @@ extension CatalogViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - CatalogView
 
 extension CatalogViewController: CatalogView {
+    
+    func displayAlert(_ alert: UIAlertController) {
+        self.present(alert, animated: true)
+    }
 
     func displayCells(_ cellModels: [CatalogCellModel]) {
         self.cellModels = cellModels

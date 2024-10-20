@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum CatalogPresenterState {
     case initial, loading, failed(Error), data([NftCollection])
@@ -14,6 +15,7 @@ enum CatalogPresenterState {
 protocol CatalogPresenter: AnyObject {
     func viewDidLoad()
     func setView(_ view: CatalogView)
+    func didTapSortButton()
 }
 
 final class CatalogPresenterImpl {
@@ -86,6 +88,38 @@ final class CatalogPresenterImpl {
 }
 
 extension CatalogPresenterImpl: CatalogPresenter {
+    
+    func didTapSortButton() {
+        let alertView = UIAlertController(
+            title: NSLocalizedString("Sort.title", comment: ""),
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        alertView.addAction(
+            UIAlertAction(
+                title: NSLocalizedString("Sort.byName", comment: ""),
+                style: .default
+            ) { [weak self] _ in
+                
+            }
+        )
+        alertView.addAction(
+            UIAlertAction(
+                title: NSLocalizedString("Sort.byCount", comment: ""),
+                style: .default
+            ) { [weak self] _ in
+                
+            }
+        )
+        alertView.addAction(
+            UIAlertAction(
+                title: NSLocalizedString("Sort.cancel", comment: ""),
+                style: .cancel
+            )
+        )
+        view?.displayAlert(alertView)
+    }
+    
     func setView(_ view: any CatalogView) {
         self.view = view
     }
