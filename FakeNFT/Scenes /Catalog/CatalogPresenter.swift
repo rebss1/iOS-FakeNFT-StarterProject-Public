@@ -32,6 +32,7 @@ final class CatalogPresenterImpl {
             stateDidChanged()
         }
     }
+    private let defaultsManager = DefaultsManager()
     
     //MARK: - Initializers
     
@@ -69,6 +70,14 @@ final class CatalogPresenterImpl {
             switch result {
             case .success(let collections):
                 self?.state = .data(collections)
+                if let sortType = self?.defaultsManager.fetchObject(type: String.self, for: .sortType) {
+                    if sortType == "name" {
+                        self?.sortCollections(by: .name)
+                    } else if sortType == "quantity" {
+                        self?.sortCollections(by: .nftsQuantity)
+                    }
+                    break
+                }
             case .failure(let error):
                 self?.state = .failed(error)
             }
@@ -93,8 +102,10 @@ final class CatalogPresenterImpl {
     private func sortCollections(by type: CatalogSortType) {
         switch type {
         case .name:
+            defaultsManager.saveObject(value: "name", for: .sortType)
             sortedCollections = collections.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
         case .nftsQuantity:
+            defaultsManager.saveObject(value: "quantity", for: .sortType)
             sortedCollections = collections.sorted { $0.nfts.count > $1.nfts.count }
         }
         self.state = .data(sortedCollections)
