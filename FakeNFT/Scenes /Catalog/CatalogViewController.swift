@@ -16,7 +16,7 @@ final class CatalogViewController: UIViewController {
 
     // MARK: - Public Properties
     
-    internal lazy var activityIndicator = UIActivityIndicatorView()
+    lazy var activityIndicator = UIActivityIndicatorView()
     
     // MARK: - Private Properties
 

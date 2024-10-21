@@ -38,10 +38,22 @@ final class CatalogCell: UICollectionViewCell, ReuseIdentifying {
         return label
     }()
     
+    // MARK: - Initializers
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setUp()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        
+        self.setUp()
+    }
+    
     // MARK: - Public Methods
 
     func configure(with cellModel: CatalogCellModel) {
-        setUp()
         self.titleLabel.text = cellModel.title
         self.countLabel.text = "(\(cellModel.size))"
         self.coverImageView.kf.setImage(with: cellModel.cover)
