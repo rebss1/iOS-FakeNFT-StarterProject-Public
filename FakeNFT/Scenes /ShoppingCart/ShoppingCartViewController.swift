@@ -45,6 +45,7 @@ final class ShoppingCartViewController: UIViewController {
     }()
     let bottomButton: Button = {
         let button = Button(title: NSLocalizedString("Cart.pay", comment: "К оплате"), style: .normal, color: .blackCustom)
+        button.addTarget(self, action: #selector(showPayScreen), for: .touchUpInside)
         button.layer.borderWidth = 0
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -134,6 +135,13 @@ final class ShoppingCartViewController: UIViewController {
         present(deleteScreen, animated: true)
     }
     
+    @objc func showPayScreen() {
+        let payScreen = PayScreenViewController()
+        let navController = UINavigationController(rootViewController: payScreen)
+        navController.modalPresentationStyle = .overCurrentContext
+        present(navController, animated: true)
+    }
+
     @objc func showActionSheet() {
         let actionSheet = UIAlertController(title: NSLocalizedString("Cart.sort", comment: "Сортировка"), message: nil, preferredStyle: .actionSheet)
         //TODO: Обработать сортировку данных с сервера
