@@ -21,7 +21,7 @@ final class PayScreenViewController: UIViewController {
         label.textColor = .blackCustom
         return label
     }()
-    let bottomView: UIView = {
+    private let bottomView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .lightGreyCustom
@@ -31,7 +31,7 @@ final class PayScreenViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    let bottomLabel: UILabel = {
+    private let bottomLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = NSLocalizedString("Pay.condition", comment: "Совершая покупку, вы соглашаетесь с условиями")
@@ -55,11 +55,24 @@ final class PayScreenViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    private var collection: UICollectionView = {
+        let collectionView = UICollectionView(
+            frame: .zero,
+            collectionViewLayout: UICollectionViewFlowLayout()
+        )
+        collectionView.isScrollEnabled = true
+        collectionView.register(PayScreenCollectionViewCell.self, forCellWithReuseIdentifier: PayScreenCollectionViewCell.identifier)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.heightAnchor.constraint(equalToConstant: 205).isActive = true
+        return collectionView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .whiteCustom
         setupUI()
+        collection.delegate = self
+        collection.dataSource = self
     }
     
     private func setupUI() {
@@ -69,6 +82,7 @@ final class PayScreenViewController: UIViewController {
         setupPayButton()
         setupBottomLabel()
         setupBottomButton()
+        setupCollectionView()
     }
     
     private func setupTitle() {
@@ -86,17 +100,17 @@ final class PayScreenViewController: UIViewController {
         
         payButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16).isActive = true
         payButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -16).isActive = true
-        payButton.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -16).isActive = true
+        payButton.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -50).isActive = true
         payButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
     }
     
     private func setupBottomView() {
         view.addSubview(bottomView)
-
+        
         bottomView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        bottomView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         bottomView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        bottomView.heightAnchor.constraint(equalToConstant: 152).isActive = true
+        bottomView.heightAnchor.constraint(equalToConstant: 186).isActive = true
     }
     
     private func setupBottomLabel() {
@@ -114,6 +128,13 @@ final class PayScreenViewController: UIViewController {
         bottomButton.topAnchor.constraint(equalTo: bottomLabel.bottomAnchor, constant: 4).isActive = true
     }
     
+    private func setupCollectionView() {
+        view.addSubview(collection)
+        collection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
+        collection.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
+        collection.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
+    }
+    
     @objc func leftButtonTapped() {
         dismiss(animated: true)
     }
@@ -129,3 +150,59 @@ final class PayScreenViewController: UIViewController {
         //TODO: обработка запроса оплаты
     }
 }
+
+extension PayScreenViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? PayScreenCollectionViewCell {
+            cell.setSelected(true)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? PayScreenCollectionViewCell {
+            cell.setSelected(false)
+        }
+    }
+}
+
+extension PayScreenViewController: UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        8
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if let cell = collection.dequeueReusableCell(withReuseIdentifier: PayScreenCollectionViewCell.identifier, for: indexPath) as? PayScreenCollectionViewCell {
+            cell.changeUI(number: indexPath.row)
+            cell.layer.masksToBounds = true
+            cell.layer.cornerRadius = 12
+            return cell
+        }
+        assertionFailure("не найдена ячейка")
+        return UICollectionViewCell()
+    }
+    
+}
+
+extension PayScreenViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let totalSpacing: CGFloat = 7
+        let numberOfItemsPerRow: CGFloat = 2 
+        
+        let availableWidth = collectionView.frame.width - totalSpacing * (numberOfItemsPerRow - 1)
+        let itemWidth = availableWidth / numberOfItemsPerRow
+        
+        return CGSize(width: itemWidth, height: 46)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 7
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 7
+    }
+}
+
