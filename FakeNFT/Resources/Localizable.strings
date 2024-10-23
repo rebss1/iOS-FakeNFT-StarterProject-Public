@@ -13,3 +13,10 @@
 "Profile.nameLabelText" = "Имя";
 "Profile.descriptionLabelText" = "Описание";
 "Profile.linkLabelText" = "Сайт";
+"Profile.from" = "от";
+"Profile.price" = "Цена";
+"Profile.sort" = "Сортировка";
+"Profile.byPrice" = "По цене";
+"Profile.byRating" = "По рейтингу";
+"Profile.byName" = "По названию";
+"Profile.close" = "Закрыть";
