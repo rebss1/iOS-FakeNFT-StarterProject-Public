@@ -7,139 +7,221 @@
 
 import UIKit
 
-final class ProfileEditViewController: UIViewController {
+protocol ProfileEditingViewControllerProtocol: AnyObject {
+    func updateTitles(profileName:String, profileBio: String, profileWebLink: String)
+}
+
+final class ProfileEditingViewController: UIViewController {
     
-    private enum Margin {
-        static let top: CGFloat = 16
-        static let left: CGFloat = 16
-        static let right: CGFloat = 16
-        static let avatarTop: CGFloat = 22
-        static let avatarDia: CGFloat = 70
-        static let labelTop: CGFloat = 24
-        static let textFieldTop: CGFloat = 8
-    }
+    var presenter: ProfileEditingPresenterProtocol?
     
-    private enum Constants {
-        static let textFieldHeight: CGFloat = 44
-        static let textViewHeight: CGFloat = 132
-    }
+    private lazy var profileCloseButton: UIBarButtonItem = {
+        let button = UIBarButtonItem()
+        let config = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold
+        )
+        button.image = UIImage(systemName: "xmark", withConfiguration: config)
+        button.action = #selector(closeButtonTapped)
+        button.target = self
+        return button
+    }()
     
-    private let closeButton: UIButton
-    private let avatarImageView: UIImageView
-    private let avatarButton: UIButton
-    private let nameLabel: UILabel
-    private let nameTextField: UITextField
-    private let descriptionLabel: UILabel
-    private let descriptionTextView: UITextView
-    private let linkLabel: UILabel
-    private let linkTextField: UITextField
-    
-    private let viewFactory = ProfileEditViewFactory.self
-    private let servicesAssembly: ServicesAssembly
-    
-    private var onCloseCallback: (()->(Void))?
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    init(servicesAssembly: ServicesAssembly, onClose: (() -> Void)? = nil) {
-        self.closeButton = viewFactory.createCloseButton()
-        self.avatarImageView = viewFactory.createAvatarImageView()
-        self.avatarButton = viewFactory.createAvatarButton()
-        self.nameLabel = viewFactory.createLabel(NSLocalizedString(" profile.nameLabelText", comment: ""))
-        self.nameTextField = viewFactory.createTextField()
-        self.descriptionLabel = viewFactory.createLabel(NSLocalizedString(" profile.descriptionLabelText", comment: ""))
-        self.descriptionTextView = viewFactory.createTextView()
-        self.linkLabel = viewFactory.createLabel(NSLocalizedString("profile.linkLabelText", comment:""))
-        self.linkTextField = viewFactory.createTextField()
+    private lazy var profileAvatar: UIImageView = {
+        let avatar = UIImageView()
+        avatar.image = .profileAvatarMock
+        avatar.contentMode = .scaleAspectFill
+        avatar.translatesAutoresizingMaskIntoConstraints = false
+        avatar.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        avatar.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        avatar.layer.cornerRadius = 35
+        avatar.layer.masksToBounds = true
+        return avatar
         
-        self.servicesAssembly = servicesAssembly
-        self.onCloseCallback = onClose
-        
-        super.init(nibName: nil, bundle: nil)
-    }
+    }()
+    
+    private lazy var profileAvatarBackground: UIView = {
+        let view = UIView(frame: profileAvatar.bounds)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .blackUniversal.withAlphaComponent(0.6)
+        return view
+    }()
+    
+    private lazy var labelChangePhoto: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 10, weight: .medium)
+        label.textColor = UIColor.whiteUniversal
+        label.text = "Сменить фото"
+        label.numberOfLines = 2
+        label.textAlignment = .center
+        label.isUserInteractionEnabled = true
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(changePhotoTapped))
+        label.addGestureRecognizer(tapGesture)
+        return label
+    }()
+    
+    private lazy var nameLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .headline3
+        label.textColor = UIColor.blackUniversal
+        label.text = "Имя"
+        return label
+    }()
+    
+    private lazy var  profileNameTextField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.layer.cornerRadius = 12
+        textField.font = .bodyRegular
+        textField.backgroundColor = .lightGreyCustom
+        let spacerView = UIView(frame:CGRect(x:0, y:0, width:16, height:10))
+        textField.leftViewMode = .always
+        textField.leftView = spacerView
+        textField.clearButtonMode = .whileEditing
+        textField.textColor = .blackUniversal
+        return textField
+    }()
+    
+    private lazy var descriptionLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .headline3
+        label.textColor = UIColor.blackUniversal
+        label.text = "Описание"
+        return label
+    }()
+    
+    private lazy var profileBioTextView: UITextView = {
+        let textView = UITextView()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.layer.cornerRadius = 12
+        textView.font = .bodyRegular
+        textView.backgroundColor = .lightGreyCustom
+        textView.textContainerInset = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)
+        textView.textColor = .blackUniversal
+        return textView
+    }()
+    
+    private lazy var siteLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .headline3
+        label.textColor = .blackUniversal
+        label.text = "Сайт"
+        return label
+    }()
+    
+    private lazy var profileLinkTextField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.layer.cornerRadius = 12
+        textField.font = .bodyRegular
+        textField.backgroundColor = .lightGreyCustom
+        let spacerView = UIView(frame:CGRect(x:0, y:0, width:16, height:10))
+        textField.leftViewMode = .always
+        textField.leftView = spacerView
+        textField.clearButtonMode = .whileEditing
+        textField.textColor = .blackUniversal
+        return textField
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setup()
-    }
-    
-}
-
-// MARK: - Helpers
-private extension ProfileEditViewController {
-    
-    func setup() {
-        setupViews()
-        setupConstraints()
-    }
-    
-    func setupViews() {
         view.backgroundColor = .whiteUniversal
+        tabBarController?.tabBar.isHidden = true
+        setupNavBar()
+        addElements()
+        setupConstraints()
         
-        [
-            closeButton,
-            avatarImageView,
-            avatarButton,
-            nameLabel,
-            nameTextField,
-            descriptionLabel,
-            descriptionTextView,
-            linkLabel,
-            linkTextField
-        ].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
-        }
+        presenter?.udateProfile()
         
-        closeButton.addTarget(self, action: #selector(closeAction), for: .touchUpInside)
     }
     
-    func setupConstraints() {
+    //MARK: - Private Methods
+    private func setupNavBar() {
+        navigationItem.rightBarButtonItem = profileCloseButton
+        navigationItem.rightBarButtonItem?.tintColor = .blackUniversal
+    }
+    
+    private func addElements() {
+        [profileAvatar, nameLabel, profileNameTextField,
+         profileBioTextView, descriptionLabel, siteLabel, profileLinkTextField].forEach { view.addSubview($0) }
+        
+        profileAvatar.addSubview(profileAvatarBackground)
+        profileAvatarBackground.addSubview(labelChangePhoto)
+        
+    }
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
-            closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Margin.top),
-            closeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Margin.right),
-            avatarImageView.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: Margin.avatarTop),
-            avatarImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0),
-            avatarImageView.widthAnchor.constraint(equalToConstant: Margin.avatarDia),
-            avatarImageView.heightAnchor.constraint(equalToConstant: Margin.avatarDia),
-            avatarButton.widthAnchor.constraint(equalToConstant: Margin.avatarDia),
-            avatarButton.heightAnchor.constraint(equalToConstant: Margin.avatarDia),
-            avatarButton.centerXAnchor.constraint(equalTo: avatarImageView.centerXAnchor, constant: 0),
-            avatarButton.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor, constant: 0),
-            nameLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: Margin.labelTop),
-            nameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Margin.left),
-            nameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Margin.right),
-            nameTextField.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: Margin.textFieldTop),
-            nameTextField.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor, constant: 0),
-            nameTextField.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor, constant: 0),
-            nameTextField.heightAnchor.constraint(equalToConstant: Constants.textFieldHeight),
-            descriptionLabel.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: Margin.labelTop),
-            descriptionLabel.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor, constant: 0),
-            descriptionLabel.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor, constant: 0),
-            descriptionTextView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: Margin.textFieldTop),
-            descriptionTextView.leadingAnchor.constraint(equalTo: descriptionLabel.leadingAnchor, constant: 0),
-            descriptionTextView.trailingAnchor.constraint(equalTo: descriptionLabel.trailingAnchor, constant: 0),
-            descriptionTextView.heightAnchor.constraint(equalToConstant: Constants.textViewHeight),
-            linkLabel.topAnchor.constraint(equalTo: descriptionTextView.bottomAnchor, constant: Margin.labelTop),
-            linkLabel.leadingAnchor.constraint(equalTo: descriptionTextView.leadingAnchor, constant: 0),
-            linkLabel.trailingAnchor.constraint(equalTo: descriptionTextView.trailingAnchor, constant: 0),
-            linkTextField.topAnchor.constraint(equalTo: linkLabel.bottomAnchor, constant: Margin.textFieldTop),
-            linkTextField.leadingAnchor.constraint(equalTo: linkLabel.leadingAnchor, constant: 0),
-            linkTextField.trailingAnchor.constraint(equalTo: linkLabel.trailingAnchor, constant: 0),
-            linkTextField.heightAnchor.constraint(equalToConstant: Constants.textFieldHeight),
+            profileAvatar.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            profileAvatar.topAnchor.constraint(equalTo: view.topAnchor, constant: 88),
+            profileAvatar.heightAnchor.constraint(equalToConstant: 70),
+            profileAvatar.widthAnchor.constraint(equalToConstant: 70),
+            
+            profileAvatarBackground.centerXAnchor.constraint(equalTo: profileAvatar.centerXAnchor),
+            profileAvatarBackground.centerYAnchor.constraint(equalTo: profileAvatar.centerYAnchor),
+            profileAvatarBackground.heightAnchor.constraint(equalToConstant: 70),
+            profileAvatarBackground.widthAnchor.constraint(equalToConstant: 70),
+            
+            labelChangePhoto.centerXAnchor.constraint(equalTo: profileAvatarBackground.centerXAnchor),
+            labelChangePhoto.centerYAnchor.constraint(equalTo: profileAvatarBackground.centerYAnchor),
+            labelChangePhoto.heightAnchor.constraint(equalToConstant: 24),
+            labelChangePhoto.widthAnchor.constraint(equalToConstant: 45),
+            
+            nameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            nameLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            nameLabel.topAnchor.constraint(equalTo: profileAvatar.bottomAnchor, constant: 24),
+            nameLabel.heightAnchor.constraint(equalToConstant: 28),
+            
+            profileNameTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            profileNameTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            profileNameTextField.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
+            profileNameTextField.heightAnchor.constraint(equalToConstant: 44),
+            
+            descriptionLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            descriptionLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            descriptionLabel.topAnchor.constraint(equalTo: profileNameTextField.bottomAnchor, constant: 24),
+            descriptionLabel.heightAnchor.constraint(equalToConstant: 28),
+            
+            profileBioTextView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            profileBioTextView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            profileBioTextView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 8),
+            profileBioTextView.heightAnchor.constraint(equalToConstant: 132),
+            
+            siteLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            siteLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            siteLabel.topAnchor.constraint(equalTo: profileBioTextView.bottomAnchor, constant: 24),
+            siteLabel.heightAnchor.constraint(equalToConstant: 28),
+            
+            profileLinkTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            profileLinkTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            profileLinkTextField.topAnchor.constraint(equalTo: siteLabel.bottomAnchor, constant: 8),
+            profileLinkTextField.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
     
-}
-
-// MARK: - Actions
-private extension ProfileEditViewController {
-    
-    @objc private func closeAction() {
-        onCloseCallback?()
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
     
+    @objc private func closeButtonTapped() {
+        print("tapped")
+        dismiss(animated: true)
+    }
+    
+    @objc private func changePhotoTapped() {
+        print("change photo")
+        
+    }
+}
+
+//MARK: - FavoriteNFTControllerProtocol
+extension ProfileEditingViewController: ProfileEditingViewControllerProtocol {
+    
+    func updateTitles(profileName: String, profileBio: String, profileWebLink: String) {
+        profileNameTextField.text = profileName
+        profileBioTextView.text = profileBio
+        profileLinkTextField.text = profileWebLink
+    }
 }
