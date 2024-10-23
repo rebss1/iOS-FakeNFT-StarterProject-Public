@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import ProgressHUD
 
 protocol FavouriteNFTViewControllerProtocol: AnyObject {
     
+    func setLoader(visible: Bool)
     func refreshNfts(nfts: [FavouriteNFT])
+    func showError(_ model: ErrorModel)
 }
 
 final class FavouriteNFTViewController: UIViewController {
@@ -61,6 +64,11 @@ final class FavouriteNFTViewController: UIViewController {
         presenter?.loadNfts()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        ProgressHUD.dismiss()
+        
+        super.viewWillDisappear(animated)
+    }
     
     @objc private func close() {
         print("closed")
@@ -124,8 +132,13 @@ extension FavouriteNFTViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-//MARK: - FavoriteNFTControllerProtocol
+//MARK: - FavouriteNFTControllerProtocol
 extension FavouriteNFTViewController: FavouriteNFTViewControllerProtocol {
+    
+    func setLoader(visible: Bool) {
+        visible ? ProgressHUD.show() : ProgressHUD.dismiss()
+    }
+    
     
     func refreshNfts(nfts: [FavouriteNFT]) {
         visibleNfts = nfts
@@ -146,5 +159,12 @@ extension FavouriteNFTViewController: FavouriteNFTViewControllerProtocol {
         }
     }
 }
+
+// MARK: - ErrorView
+extension FavouriteNFTViewController: ErrorView {
+    
+}
+
+
 
 

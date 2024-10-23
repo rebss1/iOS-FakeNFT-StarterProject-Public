@@ -25,7 +25,18 @@ final class TabBarController: UITabBarController {
         let shoppingCartViewController = ShoppingCartViewController(
             servicesAssembly: servicesAssembly
         )
-        let profileViewController = initProfileTabBarViewController(servicesAssembly)
+        let networkClient = DefaultNetworkClient()
+        let profileService = ProfileServiceImpl(
+            networkClient: networkClient
+        )
+        let profilePresenter = ProfilePresenter(
+            service: profileService,
+            profileId: ProfileConstants.profileId
+        )
+        
+        let profileController = ProfileViewController(presenter: profilePresenter)
+        profilePresenter.profileView = profileController
+        let profileNavigationController = UINavigationController(rootViewController: profileController)
         
         catalogViewController.tabBarItem = UITabBarItem(title: NSLocalizedString("Tab.catalog", comment: ""),
                                                         image: UIImage(named: "catalogNoActive"),
@@ -33,16 +44,11 @@ final class TabBarController: UITabBarController {
         shoppingCartViewController.tabBarItem = UITabBarItem(title: NSLocalizedString("Tab.cart", comment: ""),
                                                       image: UIImage(named: "basketNoActive"),
                                                       selectedImage: UIImage(named: "basketActive"))
-        profileViewController.tabBarItem = UITabBarItem(title: NSLocalizedString("Tab.profile", comment: ""),
+        profileController.tabBarItem = UITabBarItem(title: NSLocalizedString("Tab.profile", comment: ""),
                                                       image: UIImage(named: "profileNoActive"),
                                                       selectedImage: UIImage(named: "profileActive"))
         
-        viewControllers = [profileViewController, catalogViewController, shoppingCartViewController]
+        viewControllers = [profileNavigationController, catalogViewController, shoppingCartViewController]
     }
     
-    private func initProfileTabBarViewController(_ servicesAssembly: ServicesAssembly) -> UIViewController {
-        let vc = ProfileViewController(servicesAssembly: servicesAssembly)
-        let navVc = UINavigationController(rootViewController: vc)
-        return navVc
-    }
 }

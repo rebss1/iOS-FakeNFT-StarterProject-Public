@@ -10,7 +10,7 @@ import Kingfisher
 
 final class ProfileFavouriteNFTCollectionCell: UICollectionViewCell {
     
-    static let reuseIdentifier: String = "FavoriteNFTCollectionCell"
+    static let reuseIdentifier: String = "FavouriteNFTCollectionCell"
     
     private static let totalStars = 5
     

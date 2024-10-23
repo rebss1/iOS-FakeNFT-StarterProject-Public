@@ -8,10 +8,9 @@
 
 import UIKit
 
-final class ProfileTableCell: UITableViewCell {
+final class ProfileTableCell: UITableViewCell, ReuseIdentifying {
     
     // MARK: - Properties
-    static let reuseIdentifier = "ProfileTableCell"
     
     let profileTableTitle: UILabel = {
         let table = UILabel()
@@ -56,3 +55,4 @@ final class ProfileTableCell: UITableViewCell {
     }
     
 }
+
