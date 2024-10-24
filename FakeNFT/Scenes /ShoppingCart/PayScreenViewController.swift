@@ -9,19 +9,19 @@ import UIKit
 
 final class PayScreenViewController: UIViewController {
     
-    private var backButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(image: UIImage(named: "backward"), style: .plain, target: nil, action: nil)
+    private lazy var backButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: UIImage(named: "backward"), style: .plain, target: self, action: #selector(leftButtonTapped))
         button.tintColor = UIColor.blackCustom
         return button
     }()
-    private var titleText: UILabel = {
+    private lazy var titleText: UILabel = {
         let label = UILabel()
         label.text = NSLocalizedString("Pay.title", comment: "Выберите способ оплаты")
         label.font = .boldSystemFont(ofSize: 15)
         label.textColor = .blackCustom
         return label
     }()
-    private let bottomView: UIView = {
+    private lazy var bottomView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .lightGreyCustom
@@ -31,39 +31,40 @@ final class PayScreenViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    private let bottomLabel: UILabel = {
+    private lazy var bottomLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = NSLocalizedString("Pay.condition", comment: "Совершая покупку, вы соглашаетесь с условиями")
         label.textColor = .blackCustom
-        label.font = .systemFont(ofSize: 13)
+        label.font = .caption2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    private var payButton: UIButton = {
+    private lazy var payButton: UIButton = {
         let button = Button(title: NSLocalizedString("Pay.pay", comment: "Оплатить"), style: .normal, color: .blackCustom)
         button.addTarget(self, action: #selector(payButtonTapped), for: .touchUpInside)
         button.layer.borderWidth = 0
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    private var bottomButton: UIButton = {
+    private lazy var bottomButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(NSLocalizedString("Pay.agreement", comment: "Пользовательского соглашения"), for: .normal)
         button.addTarget(self, action: #selector (bottomButtonTapped), for: .touchUpInside)
-        button.titleLabel?.font = .systemFont(ofSize: 13)
+        button.titleLabel?.font = .caption2
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    private var collection: UICollectionView = {
+    private lazy var collection: UICollectionView = {
         let collectionView = UICollectionView(
             frame: .zero,
             collectionViewLayout: UICollectionViewFlowLayout()
         )
+        collectionView.delegate = self
+        collectionView.dataSource = self
         collectionView.isScrollEnabled = true
-        collectionView.register(PayScreenCollectionViewCell.self, forCellWithReuseIdentifier: PayScreenCollectionViewCell.identifier)
+        collectionView.register(PayScreenCollectionViewCell.self)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.heightAnchor.constraint(equalToConstant: 205).isActive = true
         return collectionView
     }()
     
@@ -71,8 +72,6 @@ final class PayScreenViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .whiteCustom
         setupUI()
-        collection.delegate = self
-        collection.dataSource = self
     }
     
     private func setupUI() {
@@ -91,8 +90,6 @@ final class PayScreenViewController: UIViewController {
     
     private func setupBackButton() {
         navigationItem.leftBarButtonItem = backButton
-        backButton.target = self
-        backButton.action = #selector(leftButtonTapped)
     }
     
     private func setupPayButton() {
@@ -130,9 +127,11 @@ final class PayScreenViewController: UIViewController {
     
     private func setupCollectionView() {
         view.addSubview(collection)
+        
         collection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         collection.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         collection.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
+        collection.heightAnchor.constraint(equalToConstant: 205).isActive = true
     }
     
     @objc func leftButtonTapped() {
@@ -141,7 +140,7 @@ final class PayScreenViewController: UIViewController {
     
     @objc func bottomButtonTapped() {
         let webScreen = WebViewScreenViewController()
-        let navController = UINavigationController(rootViewController: webScreen)
+        let navController = webScreen.wrapWithNavigationController()
         navController.modalPresentationStyle = .overCurrentContext
         present(navController, animated: true)
     }
@@ -173,14 +172,9 @@ extension PayScreenViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let cell = collection.dequeueReusableCell(withReuseIdentifier: PayScreenCollectionViewCell.identifier, for: indexPath) as? PayScreenCollectionViewCell {
-            cell.changeUI(number: indexPath.row)
-            cell.layer.masksToBounds = true
-            cell.layer.cornerRadius = 12
-            return cell
-        }
-        assertionFailure("не найдена ячейка")
-        return UICollectionViewCell()
+        let cell: PayScreenCollectionViewCell = collection.dequeueReusableCell(indexPath: indexPath)
+        cell.changeUI(number: indexPath.row)
+        return cell
     }
     
 }
@@ -189,7 +183,7 @@ extension PayScreenViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let totalSpacing: CGFloat = 7
-        let numberOfItemsPerRow: CGFloat = 2 
+        let numberOfItemsPerRow: CGFloat = 2
         
         let availableWidth = collectionView.frame.width - totalSpacing * (numberOfItemsPerRow - 1)
         let itemWidth = availableWidth / numberOfItemsPerRow

@@ -7,32 +7,30 @@
 
 import UIKit
 
-class PayScreenCollectionViewCell: UICollectionViewCell {
+class PayScreenCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
     
-    static let identifier = "CustomCell"
+    static let defaultReuseIdentifier = "CustomCell"
     private var isSelect = false
-    private let namesOfImage = ["bitcoin","dogecoin","tether","apecoin","solana","etherium","cardano","shiba"]
-    private let fullName = ["Bitcoin","Dogecoin","Tether","Apecoin","Solana","Ethereum","Cardano","Shiba Inu"]
-    private let shortName = ["BTC","DOGE","USDT","APE","SOL","ETH","ADA","SHIB"]
-    private var imageView: UIImageView = {
+    static private let namesOfImage = ["bitcoin","dogecoin","tether","apecoin","solana","etherium","cardano","shiba"]
+    static private let fullName = ["Bitcoin","Dogecoin","Tether","Apecoin","Solana","Ethereum","Cardano","Shiba Inu"]
+    static private let shortName = ["BTC","DOGE","USDT","APE","SOL","ETH","ADA","SHIB"]
+    private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
-        imageView.widthAnchor.constraint(equalToConstant: 36).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 36).isActive = true
         return imageView
     }()
-    private let label: UILabel = {
+    private lazy var label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 13)
+        label.font = .caption2
         label.textColor = .blackCustom
         return label
     }()
-    private let valueLabel: UILabel = {
+    private lazy var valueLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 13)
+        label.font = .caption2
         label.textColor = .greenUniversal
         return label
     }()
@@ -56,6 +54,8 @@ class PayScreenCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupUI(){
+        layer.masksToBounds = true
+        layer.cornerRadius = 12
         setupImage()
         setupLabel()
         setupValueLabel()
@@ -66,6 +66,9 @@ class PayScreenCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(imageView)
         imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12).isActive = true
         imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: 36).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 36).isActive = true
+
     }
     
     private func setupLabel(){
@@ -91,8 +94,8 @@ class PayScreenCollectionViewCell: UICollectionViewCell {
     }
     
     func changeUI(number: Int) {
-        imageView.image = UIImage(named: namesOfImage[number])
-        label.text = fullName[number]
-        valueLabel.text = shortName[number]
+        imageView.image = UIImage(named: PayScreenCollectionViewCell.namesOfImage[number])
+        label.text = PayScreenCollectionViewCell.fullName[number]
+        valueLabel.text = PayScreenCollectionViewCell.shortName[number]
     }
 }

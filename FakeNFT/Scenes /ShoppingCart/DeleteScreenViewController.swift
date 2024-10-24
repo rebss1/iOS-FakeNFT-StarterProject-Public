@@ -11,39 +11,34 @@ final class DeleteScreenViewController: UIViewController {
 
     weak var parentController: ShoppingCartViewController?
     private var centerImage: UIImageView
-    private let titleLabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = NSLocalizedString("DeleteScreen.title", comment: "Вы уверены, что хотите удалить объект из корзины?")
         label.textColor = .blackCustom
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 13)
+        label.font = .caption2
         label.numberOfLines = 2
-        label.widthAnchor.constraint(equalToConstant: 180).isActive = true
         return label
     }()
-    private let deleteButton = {
+    private lazy var deleteButton: UIButton = {
         let button = Button(title: NSLocalizedString("DeleteScreen.delete", comment: "Удалить"), style: .normal, color: .blackCustom) {
             // TODO: сделать удаление
         }
         button.setTitleColor(UIColor.redUniversal, for: .normal)
         button.layer.borderWidth = 0
-        button.widthAnchor.constraint(equalToConstant: 127).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    
-    private let backButton = {
-        let button = Button(title: NSLocalizedString("DeleteScreen.back", comment: "Вернуться"), style: .normal, color: .blackCustom)
+    private lazy var backButton: UIButton = {
+        let button = Button(title: NSLocalizedString("DeleteScreen.back", comment: "Вернуться"), style: .normal, color: .blackCustom){
+            self.parentController?.deleteBLur()//TODO: перенести в presenter
+            self.dismiss(animated: true, completion: nil)
+        }
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.borderWidth = 0
-        button.widthAnchor.constraint(equalToConstant: 127).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         return button
     }()
-    
     
     init(image: UIImage) {
         self.centerImage = UIImageView(image: image)
@@ -77,23 +72,24 @@ final class DeleteScreenViewController: UIViewController {
         view.addSubview(titleLabel)
         titleLabel.leadingAnchor.constraint(equalTo: centerImage.leadingAnchor, constant: -36).isActive = true
         titleLabel.topAnchor.constraint(equalTo: centerImage.bottomAnchor, constant: 12).isActive = true
+        titleLabel.widthAnchor.constraint(equalToConstant: 180).isActive = true
     }
     
     private func setupDeleteButton() {
         view.addSubview(deleteButton)
         deleteButton.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor, constant: -41).isActive = true
         deleteButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20).isActive = true
+        deleteButton.widthAnchor.constraint(equalToConstant: 127).isActive = true
+        deleteButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+
     }
     
     private func setupBackButton() {
         view.addSubview(backButton)
         backButton.leadingAnchor.constraint(equalTo: deleteButton.trailingAnchor, constant: 8).isActive = true
         backButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20).isActive = true
-    }
-    
-    @objc private func backButtonTapped() {
-        print("Back button tapped")
-        parentController?.deleteBLur()
-        dismiss(animated: true, completion: nil)
+        backButton.widthAnchor.constraint(equalToConstant: 127).isActive = true
+        backButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+
     }
 }
