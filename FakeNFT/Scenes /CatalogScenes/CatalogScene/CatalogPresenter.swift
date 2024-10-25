@@ -16,6 +16,7 @@ protocol CatalogPresenter: AnyObject {
     func viewDidLoad()
     func setView(_ view: CatalogView)
     func didTapSortButton()
+    func didSelectCollection(with index: Int)
 }
 
 final class CatalogPresenterImpl {
@@ -113,6 +114,14 @@ final class CatalogPresenterImpl {
 }
 
 extension CatalogPresenterImpl: CatalogPresenter {
+    
+    func didSelectCollection(with index: Int) {
+        let assembler = NftCollectionAssembly(servicesAssembler: services)
+        let input = NftCollectionInput(collection: sortedCollections[index])
+        let viewController = assembler.build(with: input)
+        viewController.modalPresentationStyle = .fullScreen
+        self.view?.presentCollection(on: viewController)
+    }
     
     func didTapSortButton() {
         let alertView = UIAlertController(

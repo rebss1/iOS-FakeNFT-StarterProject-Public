@@ -10,6 +10,7 @@ import UIKit
 protocol CatalogView: AnyObject, ErrorView, LoadingView {
     func displayCells(_ cellModels: [CatalogCellModel])
     func displayAlert(_ alert: UIAlertController)
+    func presentCollection(on viewController: UIViewController)
 }
 
 final class CatalogViewController: UIViewController {
@@ -143,9 +144,24 @@ extension CatalogViewController: UICollectionViewDelegateFlowLayout {
     ) -> CGFloat { 8 }
 }
 
+extension CatalogViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        presenter.didSelectCollection(with: indexPath.row)
+    }
+}
+
 // MARK: - CatalogView
 
 extension CatalogViewController: CatalogView {
+    
+    func presentCollection(on viewController: UIViewController) {
+        self.present(viewController, animated: true)
+    }
     
     func displayAlert(_ alert: UIAlertController) {
         self.present(alert, animated: true)
