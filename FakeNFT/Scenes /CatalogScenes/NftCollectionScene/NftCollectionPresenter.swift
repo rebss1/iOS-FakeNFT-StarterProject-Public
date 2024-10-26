@@ -110,11 +110,11 @@ final class NftCollectionPresenterImpl {
         }
     }
     
-    private func putLikedNfts() {
+    private func putLikedNfts(_ likedNfts: [String]) {
         likedNftService.sendLikedNftsPutRequest(likedNfts: likedNfts) { [weak self] result in
             switch result {
-            case .success(let nfts):
-                self?.likedNfts = nfts.asArray()
+            case .success(_):
+//                self?.likedNfts = nfts.asArray()
                 if let nfts = self?.nfts {
                     self?.state = .data(nfts)
                 }
@@ -137,7 +137,11 @@ extension NftCollectionPresenterImpl: NftCollectionPresenter {
         } else {
             likedNfts.append(nft)
         }
-        putLikedNfts()
+        if likedNfts.isEmpty {
+            putLikedNfts(["null"])
+        } else {
+            putLikedNfts(likedNfts)
+        }
     }
     
     func didTapCartButton() {
