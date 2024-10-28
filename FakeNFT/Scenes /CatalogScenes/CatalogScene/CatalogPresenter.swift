@@ -117,7 +117,13 @@ extension CatalogPresenterImpl: CatalogPresenter {
     
     func didSelectCollection(with index: Int) {
         let assembler = NftCollectionAssembly(servicesAssembler: services)
-        let input = NftCollectionInput(collection: sortedCollections[index])
+        let collection: NftCollection
+        if sortedCollections.isEmpty {
+            collection = collections[index]
+        } else {
+            collection = sortedCollections[index]
+        }
+        let input = NftCollectionInput(collection: collection)
         let viewController = assembler.build(with: input)
         viewController.modalPresentationStyle = .fullScreen
         self.view?.presentCollection(on: viewController)
