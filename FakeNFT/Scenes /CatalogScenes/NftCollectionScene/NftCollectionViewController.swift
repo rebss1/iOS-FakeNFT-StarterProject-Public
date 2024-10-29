@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Foundation
 
 protocol NftCollectionView: AnyObject, ErrorView, LoadingView {
     func displayHeader(_ headerModel: NftCollectionHeaderModel)
@@ -28,7 +27,7 @@ final class NftCollectionViewController: UIViewController {
     private var cellModels: [NftCollectionCellModel] = []
     private var headerModel: NftCollectionHeaderModel?
     
-    // MARK: - UIViews
+    // MARK: - UI
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -64,22 +63,20 @@ final class NftCollectionViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Public Methods
+    // MARK: - Overriden Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
         presenter.viewDidLoad()
     }
-    
+}
     // MARK: - Private Methods
-    
-    private func setUp() {
-        if #available(iOS 11.0, *) {
-            collectionView.contentInsetAdjustmentBehavior = .never
-        } else {
-            automaticallyAdjustsScrollViewInsets = false
-        }
+
+private extension NftCollectionViewController {
+
+    func setUp() {
+        collectionView.contentInsetAdjustmentBehavior = .never
         view.backgroundColor = .whiteCustom
         view.addSubviews([collectionView, backButton])
         
@@ -100,8 +97,8 @@ final class NftCollectionViewController: UIViewController {
     }
     
     @objc
-    private func didTapBackButton() {
-        self.dismiss(animated: true)
+    func didTapBackButton() {
+        dismiss(animated: true)
     }
 }
 

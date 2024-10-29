@@ -11,11 +11,11 @@ import Kingfisher
 final class NftCollectionHeader: UICollectionViewCell, ReuseIdentifying {
     
     // MARK: - Constants
-
+    
     static let identifier = "NftCollectionHeader"
     
-    // MARK: - UIViews
-
+    // MARK: - UI
+    
     private lazy var nftCollectionCover: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 12
@@ -73,18 +73,21 @@ final class NftCollectionHeader: UICollectionViewCell, ReuseIdentifying {
         super.init(coder: coder)
     }
     
-    // MARK: - Public Functions
-    
+    // MARK: - Public Methods
+
     func configure(with cellModel: NftCollectionHeaderModel) {
-        self.nftCollectionCover.kf.setImage(with: cellModel.cover)
-        self.collectionNameLabel.text = cellModel.name
-        self.authorNameLabel.text = cellModel.author
-        self.collectionDescriptionLabel.text = cellModel.description
+        nftCollectionCover.kf.setImage(with: cellModel.cover)
+        collectionNameLabel.text = cellModel.name
+        authorNameLabel.text = cellModel.author
+        collectionDescriptionLabel.text = cellModel.description
     }
+}
     
     // MARK: - Private Functions
     
-    private func setUp() {
+private extension NftCollectionHeader {
+    
+     func setUp() {
         contentView.addSubviews([nftCollectionCover, collectionNameLabel, collectionAuthorLabel, authorNameLabel, collectionDescriptionLabel])
         contentView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -94,18 +97,18 @@ final class NftCollectionHeader: UICollectionViewCell, ReuseIdentifying {
             contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
             
-            nftCollectionCover.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
-            nftCollectionCover.topAnchor.constraint(equalTo: self.contentView.topAnchor),
-            nftCollectionCover.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
+            nftCollectionCover.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            nftCollectionCover.topAnchor.constraint(equalTo: contentView.topAnchor),
+            nftCollectionCover.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             nftCollectionCover.heightAnchor.constraint(equalToConstant: 310),
             
             collectionNameLabel.topAnchor.constraint(equalTo: nftCollectionCover.bottomAnchor, constant: 16),
-            collectionNameLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16),
-            collectionNameLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -16),
+            collectionNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            collectionNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             collectionNameLabel.heightAnchor.constraint(equalToConstant: 28),
             
             collectionAuthorLabel.topAnchor.constraint(equalTo: collectionNameLabel.bottomAnchor, constant: 13),
-            collectionAuthorLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16),
+            collectionAuthorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             collectionAuthorLabel.heightAnchor.constraint(equalToConstant: 18),
             
             authorNameLabel.centerYAnchor.constraint(equalTo: collectionAuthorLabel.centerYAnchor),
@@ -113,8 +116,8 @@ final class NftCollectionHeader: UICollectionViewCell, ReuseIdentifying {
             authorNameLabel.heightAnchor.constraint(equalToConstant: 28),
             
             collectionDescriptionLabel.topAnchor.constraint(equalTo: authorNameLabel.bottomAnchor),
-            collectionDescriptionLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16),
-            collectionDescriptionLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -16)
+            collectionDescriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            collectionDescriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
     }
 }

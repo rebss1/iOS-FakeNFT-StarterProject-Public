@@ -8,7 +8,10 @@
 import Foundation
 
 enum NftCollectionPresenterState {
-    case initial, loading, failed(Error), data([Nft])
+    case initial
+    case loading
+    case failed(Error)
+    case data([Nft])
 }
 
 protocol NftCollectionPresenter {
@@ -19,12 +22,15 @@ protocol NftCollectionPresenter {
 
 final class NftCollectionPresenterImpl {
     
-    //MARK: - Private properties
-    
-    private var nfts: [Nft] = []
-    private var likedNfts: [String] = []
+    //MARK: - Public properties
     
     weak var view: NftCollectionView?
+    
+    //MARK: - Private properties
+    
+    private var group = DispatchGroup()
+    private var nfts: [Nft] = []
+    private var likedNfts: [String] = []
     private let input: NftCollectionInput
     private let nftService: NftService
     private let likedNftService: LikedNftsService
@@ -41,31 +47,38 @@ final class NftCollectionPresenterImpl {
         self.nftService = nftService
         self.likedNftService = likedNftService
     }
+}
+
+// MARK: - Private Methods
+
+private extension NftCollectionPresenterImpl {
     
-    // MARK: - Private Methods
-    
-    private func stateDidChanged() {
+    func stateDidChanged() {
         switch state {
         case .initial:
             assertionFailure("can't move to initial state")
         case .loading:
             view?.showLoading()
             let collection = input.collection
-            let headerModel = NftCollectionHeaderModel(cover: collection.cover,
-                                                       name: collection.name,
-                                                       author: collection.author,
-                                                       description: collection.description)
+            let headerModel = NftCollectionHeaderModel(
+                cover: collection.cover,
+                name: collection.name,
+                author: collection.author,
+                description: collection.description
+            )
             view?.displayHeader(headerModel)
             loadNfts()
         case .data(let nfts):
             view?.hideLoading()
             let cellModels = nfts.map { nft in
-                NftCollectionCellModel(name: nft.name,
-                                       image: nft.images[0],
-                                       rating: nft.rating,
-                                       price: nft.price,
-                                       isLiked: likedNfts.contains(where: { $0 == nft.id}),
-                                       inCart: true)
+                NftCollectionCellModel(
+                    name: nft.name,
+                    image: nft.images[0],
+                    rating: nft.rating,
+                    price: nft.price,
+                    isLiked: likedNfts.contains(where: { $0 == nft.id}),
+                    inCart: true
+                )
             }
             view?.displayCells(cellModels)
         case .failed(let error):
@@ -75,27 +88,28 @@ final class NftCollectionPresenterImpl {
         }
     }
     
-    private func loadNfts() {
+    func loadNfts() {
         let inputCollectionNfts = input.collection.nfts
         for nft in inputCollectionNfts {
+            group.enter()
             nftService.loadNft(id: nft.absoluteString) { [weak self] result in
+                guard let self = self else { return }
                 switch result {
                 case .success(let nft):
-                    self?.nfts.append(nft)
-                    if self?.nfts.count == inputCollectionNfts.count {
-                        if let nfts = self?.nfts {
-                            self?.state = .data(nfts)
-                        }
-                    }
+                    nfts.append(nft)
+                    group.leave()
                 case .failure(let error):
-                    self?.state = .failed(error)
+                    state = .failed(error)
                     break
                 }
             }
         }
+        group.notify(queue: DispatchQueue.main) {
+            self.state = .data(self.nfts)
+        }
     }
     
-    private func makeErrorModel(_ error: Error) -> ErrorModel {
+    func makeErrorModel(_ error: Error) -> ErrorModel {
         let message: String
         switch error {
         case is NetworkClientError:
@@ -110,7 +124,7 @@ final class NftCollectionPresenterImpl {
         }
     }
     
-    private func putLikedNfts(_ likedNfts: [String]) {
+    func putLikedNfts(_ likedNfts: [String]) {
         likedNftService.sendLikedNftsPutRequest(likedNfts: likedNfts) { [weak self] result in
             switch result {
             case .success(_):

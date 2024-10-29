@@ -16,14 +16,14 @@ protocol NftCollectionCellDelegate: AnyObject {
 final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
     
     // MARK: - Constants
-
+    
     static var defaultReuseIdentifier = "NftCollectionCell"
     
     // MARK: - Public Properties
     
     weak var delegate: NftCollectionCellDelegate?
     
-    // MARK: - UIViews
+    // MARK: - UI
     
     private lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
@@ -101,19 +101,22 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
     }
     
     // MARK: - Public Methods
-
+    
     func configure(with cellModel: NftCollectionCellModel) {
-        self.nameLabel.text = cellModel.name
-        self.nftImageView.kf.setImage(with: cellModel.image)
-        self.priceLabel.text = "\(cellModel.price) ETH"
-        self.ratingImageView.image = UIImage(named: "stars\(cellModel.rating)")
-        self.likeButton.setBackgroundImage(UIImage(named: cellModel.isLiked ? "likeActive" : "likeNoActive"), for: .normal)
-        self.cartButton.setBackgroundImage(UIImage(named: cellModel.inCart ? "inCart" : "notInCart"), for: .normal)
+        nameLabel.text = cellModel.name
+        nftImageView.kf.setImage(with: cellModel.image)
+        priceLabel.text = "\(cellModel.price) ETH"
+        ratingImageView.image = UIImage(named: "stars\(cellModel.rating)")
+        likeButton.setBackgroundImage(UIImage(named: cellModel.isLiked ? "likeActive" : "likeNoActive"), for: .normal)
+        cartButton.setBackgroundImage(UIImage(named: cellModel.inCart ? "inCart" : "notInCart"), for: .normal)
     }
+}
     
     // MARK: - Private Methods
     
-    private func setUp() {
+private extension NftCollectionCell {
+    
+    func setUp() {
         labelStack.addArrangedSubview(nameLabel)
         labelStack.addArrangedSubview(priceLabel)
         bottomStack.addArrangedSubview(labelStack)
@@ -127,25 +130,25 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
             contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
             
-            nftImageView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
-            nftImageView.topAnchor.constraint(equalTo: self.contentView.topAnchor),
-            nftImageView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
+            nftImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            nftImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            nftImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
-            likeButton.topAnchor.constraint(equalTo: self.contentView.topAnchor),
-            likeButton.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
+            likeButton.topAnchor.constraint(equalTo: contentView.topAnchor),
+            likeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             likeButton.heightAnchor.constraint(equalToConstant: 40),
             likeButton.widthAnchor.constraint(equalToConstant: 40),
             
-            ratingImageView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
+            ratingImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             ratingImageView.topAnchor.constraint(equalTo: nftImageView.bottomAnchor, constant: 8),
             ratingImageView.heightAnchor.constraint(equalToConstant: 12),
             ratingImageView.widthAnchor.constraint(equalToConstant: 68),
             
             bottomStack.topAnchor.constraint(equalTo: ratingImageView.bottomAnchor, constant: 4),
-            bottomStack.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
-            bottomStack.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
+            bottomStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            bottomStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             bottomStack.heightAnchor.constraint(equalToConstant: 40),
-            bottomStack.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -20),
+            bottomStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
             
             cartButton.heightAnchor.constraint(equalToConstant: 40),
             cartButton.widthAnchor.constraint(equalToConstant: 40)
@@ -153,12 +156,12 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
     }
     
     @objc
-    private func didTapLikeButton() {
+    func didTapLikeButton() {
         delegate?.didTapLikeButton(in: self)
     }
     
     @objc
-    private func didTapCartButton() {
+    func didTapCartButton() {
         delegate?.didTapCartButton()
     }
 }
