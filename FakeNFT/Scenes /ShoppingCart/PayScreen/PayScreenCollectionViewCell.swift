@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PayScreenCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
+final class PayScreenCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
     
     static let defaultReuseIdentifier = "CustomCell"
     private var isSelect = false

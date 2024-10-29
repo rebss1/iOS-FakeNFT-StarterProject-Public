@@ -215,6 +215,41 @@
 			path = MemoryStorage;
 			sourceTree = "<group>";
 		};
+		3C34171B2CD16A3600BB1521 /* ShoppingCartScreen */ = {
+			isa = PBXGroup;
+			children = (
+				941EB6302CBBCE1F00A93958 /* ShoppingCartViewController.swift */,
+				3C927BB22CBEF9C000450F16 /* CartTableViewCell.swift */,
+				3C3F25422CBEE1F200FF7E90 /* ShoppingCartPresenter.swift */,
+			);
+			path = ShoppingCartScreen;
+			sourceTree = "<group>";
+		};
+		3C34171C2CD16A8100BB1521 /* DeleteScreen */ = {
+			isa = PBXGroup;
+			children = (
+				3CBE3BF22CC00254003FD031 /* DeleteScreenViewController.swift */,
+			);
+			path = DeleteScreen;
+			sourceTree = "<group>";
+		};
+		3C34171D2CD16A9E00BB1521 /* PayScreen */ = {
+			isa = PBXGroup;
+			children = (
+				3CA93C8E2CC8B194001F9FEC /* PayScreenCollectionViewCell.swift */,
+				3CA93C812CC84DD0001F9FEC /* PayScreenViewController.swift */,
+			);
+			path = PayScreen;
+			sourceTree = "<group>";
+		};
+		3C34171E2CD16AB500BB1521 /* WebViewScreen */ = {
+			isa = PBXGroup;
+			children = (
+				3CA93C832CC85F05001F9FEC /* WebViewScreenViewController.swift */,
+			);
+			path = WebViewScreen;
+			sourceTree = "<group>";
+		};
 		3F478ECD29DB473000F6D39E /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
@@ -361,13 +396,10 @@
 		941EB62D2CBBCD7700A93958 /* ShoppingCart */ = {
 			isa = PBXGroup;
 			children = (
-				941EB6302CBBCE1F00A93958 /* ShoppingCartViewController.swift */,
-				3C3F25422CBEE1F200FF7E90 /* ShoppingCartPresenter.swift */,
-				3C927BB22CBEF9C000450F16 /* CartTableViewCell.swift */,
-				3CBE3BF22CC00254003FD031 /* DeleteScreenViewController.swift */,
-				3CA93C812CC84DD0001F9FEC /* PayScreenViewController.swift */,
-				3CA93C832CC85F05001F9FEC /* WebViewScreenViewController.swift */,
-				3CA93C8E2CC8B194001F9FEC /* PayScreenCollectionViewCell.swift */,
+				3C34171E2CD16AB500BB1521 /* WebViewScreen */,
+				3C34171D2CD16A9E00BB1521 /* PayScreen */,
+				3C34171C2CD16A8100BB1521 /* DeleteScreen */,
+				3C34171B2CD16A3600BB1521 /* ShoppingCartScreen */,
 			);
 			path = ShoppingCart;
 			sourceTree = "<group>";
