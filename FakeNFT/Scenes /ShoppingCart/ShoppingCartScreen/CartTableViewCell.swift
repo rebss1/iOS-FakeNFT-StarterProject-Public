@@ -7,8 +7,9 @@
 
 import UIKit
 
-final class CartTableViewCell: UITableViewCell {
+final class CartTableViewCell: UITableViewCell, ReuseIdentifying {
     
+    static let defaultReuseIdentifier = "CustomTableCell"
     weak var parentController: ShoppingCartViewController?
     private let NFTImage = {
         let image = UIImageView()
@@ -29,7 +30,7 @@ final class CartTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Name"
         label.textColor = .blackCustom
-        label.font = .boldSystemFont(ofSize: 17)
+        label.font = .bodyBold
         return label
     }()
     private let priceLabel = {
@@ -37,7 +38,7 @@ final class CartTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = NSLocalizedString("Cart.price", comment: "Цена")
         label.textColor = .blackCustom
-        label.font = .systemFont(ofSize: 13)
+        label.font = .caption2
         return label
     }()
     private let countPriceLabel = {
@@ -45,7 +46,7 @@ final class CartTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "0 ETH"
         label.textColor = .blackCustom
-        label.font = .boldSystemFont(ofSize: 17)
+        label.font = .bodyBold
         return label
     }()
     private let deleteButton: UIButton = {
@@ -53,8 +54,6 @@ final class CartTableViewCell: UITableViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "cartDelete"), for: .normal)
         button.tintColor = UIColor.blackCustom
-        button.widthAnchor.constraint(equalToConstant: 44).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
         button.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -86,6 +85,7 @@ final class CartTableViewCell: UITableViewCell {
         NFTImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16).isActive = true
         NFTImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16).isActive = true
     }
+    
     private func setupRaitingImage() {
         contentView.addSubview(raitingImage)
         raitingImage.heightAnchor.constraint(equalToConstant: 12).isActive = true
@@ -115,6 +115,8 @@ final class CartTableViewCell: UITableViewCell {
         contentView.addSubview(deleteButton)
         deleteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12).isActive = true
         deleteButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 46).isActive = true
+        deleteButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        deleteButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
     }
     
     @objc private func deleteButtonTapped() {

@@ -9,8 +9,8 @@ import UIKit
 
 final class ShoppingCartViewController: UIViewController {
     
-    var blurEffectView: UIVisualEffectView?
-    let bottomView: UIView = {
+    private var blurEffectView: UIVisualEffectView?
+    private lazy var bottomView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .lightGreyCustom
@@ -19,44 +19,46 @@ final class ShoppingCartViewController: UIViewController {
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         return view
     }()
-    let tableView = {
+    private lazy var tableView: UITableView = {
         let tableView = UITableView()
-        tableView.register(CartTableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.frame = self.view.bounds
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(CartTableViewCell.self)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .none
         tableView.backgroundColor = .whiteCustom
         return tableView
     }()
-    let countNFTLabel: UILabel = {
+    private lazy var countNFTLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "0 NFT"
         label.textColor = .blackCustom
-        label.font = .systemFont(ofSize: 15)
+        label.font = .caption1
         return label
     }()
-    let priceNFTLabel: UILabel = {
+    private lazy var priceNFTLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "0 ETH"
         label.textColor = .greenUniversal
-        label.font = .boldSystemFont(ofSize: 17)
+        label.font = .bodyBold
         return label
     }()
-    let bottomButton: Button = {
+    private lazy var bottomButton: UIButton = {
         let button = Button(title: NSLocalizedString("Cart.pay", comment: "К оплате"), style: .normal, color: .blackCustom)
+        button.addTarget(self, action: #selector(showPayScreen), for: .touchUpInside)
         button.layer.borderWidth = 0
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    let sortButton: UIButton = {
+    private lazy var sortButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "sort"), for: .normal)
         button.tintColor = UIColor.blackCustom
         button.addTarget(self, action: #selector(showActionSheet), for: .touchUpInside)
-        button.widthAnchor.constraint(equalToConstant: 44).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
         return button
     }()
     
@@ -102,16 +104,17 @@ final class ShoppingCartViewController: UIViewController {
         priceNFTLabel.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -16).isActive = true
         priceNFTLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16).isActive = true
     }
+    
     private func setupSortButton() {
         view.addSubview(sortButton)
         sortButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         sortButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -7).isActive = true
+        sortButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        sortButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
     }
+    
     private func setupTableView() {
         view.addSubview(tableView)
-        tableView.frame = self.view.bounds
-        tableView.dataSource = self
-        tableView.delegate = self
         tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 64).isActive = true
         tableView.bottomAnchor.constraint(equalTo: bottomView.topAnchor, constant: -20).isActive = true
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
@@ -132,6 +135,13 @@ final class ShoppingCartViewController: UIViewController {
         deleteScreen.parentController = self
         deleteScreen.modalPresentationStyle = .overCurrentContext
         present(deleteScreen, animated: true)
+    }
+    
+    @objc func showPayScreen() {
+        let payScreen = PayScreenViewController()
+        let navController = payScreen.wrapWithNavigationController()
+        navController.modalPresentationStyle = .overCurrentContext
+        present(navController, animated: true)
     }
     
     @objc func showActionSheet() {
@@ -166,14 +176,9 @@ extension ShoppingCartViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CartTableViewCell{
-            cell.accessoryType = .none
-            cell.parentController = self
-            return cell
-        }
-        
-        assertionFailure("не найдена ячейка")
-        return UITableViewCell()
+        let cell: CartTableViewCell = tableView.dequeueReusableCell()
+        cell.accessoryType = .none
+        cell.parentController = self
+        return cell
     }
 }
