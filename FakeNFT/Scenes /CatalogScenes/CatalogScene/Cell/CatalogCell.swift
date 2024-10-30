@@ -11,10 +11,10 @@ import Kingfisher
 final class CatalogCell: UICollectionViewCell, ReuseIdentifying {
     
     // MARK: - Constants
-
+    
     static var defaultReuseIdentifier = "CatalogCell"
     
-    // MARK: - UIViews
+    // MARK: - UI
     
     private lazy var coverImageView: UIImageView = {
         let imageView = UIImageView()
@@ -47,21 +47,23 @@ final class CatalogCell: UICollectionViewCell, ReuseIdentifying {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        
-        self.setUp()
+        setUp()
     }
     
     // MARK: - Public Methods
-
+    
     func configure(with cellModel: CatalogCellModel) {
-        self.titleLabel.text = cellModel.title
-        self.countLabel.text = "(\(cellModel.size))"
-        self.coverImageView.kf.setImage(with: cellModel.cover)
+        titleLabel.text = cellModel.title
+        countLabel.text = "(\(cellModel.size))"
+        coverImageView.kf.setImage(with: cellModel.cover)
     }
+}
     
     // MARK: - Private Methods
     
-    private func setUp() {
+private extension CatalogCell {
+    
+    func setUp() {
         contentView.addSubviews([coverImageView, titleLabel, countLabel])
         contentView.translatesAutoresizingMaskIntoConstraints = false
         

@@ -16,6 +16,7 @@ protocol CatalogPresenter: AnyObject {
     func viewDidLoad()
     func setView(_ view: CatalogView)
     func didTapSortButton()
+    func didSelectCollection(with index: Int)
 }
 
 final class CatalogPresenterImpl {
@@ -39,10 +40,13 @@ final class CatalogPresenterImpl {
     init(servicesAssembly: ServicesAssembly) {
         self.services = servicesAssembly
     }
-    
+}
+
     // MARK: - Private Methods
     
-    private func stateDidChanged() {
+private extension CatalogPresenterImpl {
+    
+    func stateDidChanged() {
         switch state {
         case .initial:
             assertionFailure("can't move to initial state")
@@ -65,26 +69,27 @@ final class CatalogPresenterImpl {
         }
     }
     
-    private func loadCollections() {
+    func loadCollections() {
         services.nftCollectionService.loadNftCollections() { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let collections):
-                self?.state = .data(collections)
-                if let sortType = self?.defaultsManager.fetchObject(type: String.self, for: .sortType) {
+                state = .data(collections)
+                if let sortType = defaultsManager.fetchObject(type: String.self, for: .sortType) {
                     if sortType == "name" {
-                        self?.sortCollections(by: .name)
+                        sortCollections(by: .name)
                     } else if sortType == "quantity" {
-                        self?.sortCollections(by: .nftsQuantity)
+                        sortCollections(by: .nftsQuantity)
                     }
                     break
                 }
             case .failure(let error):
-                self?.state = .failed(error)
+                state = .failed(error)
             }
         }
     }
     
-    private func makeErrorModel(_ error: Error) -> ErrorModel {
+    func makeErrorModel(_ error: Error) -> ErrorModel {
         let message: String
         switch error {
         case is NetworkClientError:
@@ -99,7 +104,7 @@ final class CatalogPresenterImpl {
         }
     }
     
-    private func sortCollections(by type: CatalogSortType) {
+    func sortCollections(by type: CatalogSortType) {
         switch type {
         case .name:
             defaultsManager.saveObject(value: "name", for: .sortType)
@@ -108,11 +113,25 @@ final class CatalogPresenterImpl {
             defaultsManager.saveObject(value: "quantity", for: .sortType)
             sortedCollections = collections.sorted { $0.nfts.count > $1.nfts.count }
         }
-        self.state = .data(sortedCollections)
+        state = .data(sortedCollections)
     }
 }
 
 extension CatalogPresenterImpl: CatalogPresenter {
+    
+    func didSelectCollection(with index: Int) {
+        let assembler = NftCollectionAssembly(servicesAssembler: services)
+        let collection: NftCollection
+        if sortedCollections.isEmpty {
+            collection = collections[index]
+        } else {
+            collection = sortedCollections[index]
+        }
+        let input = NftCollectionInput(collection: collection)
+        let viewController = assembler.build(with: input)
+        viewController.modalPresentationStyle = .fullScreen
+        self.view?.presentCollection(on: viewController)
+    }
     
     func didTapSortButton() {
         let alertView = UIAlertController(

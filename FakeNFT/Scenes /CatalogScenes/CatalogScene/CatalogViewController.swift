@@ -10,23 +10,23 @@ import UIKit
 protocol CatalogView: AnyObject, ErrorView, LoadingView {
     func displayCells(_ cellModels: [CatalogCellModel])
     func displayAlert(_ alert: UIAlertController)
+    func presentCollection(on viewController: UIViewController)
 }
 
 final class CatalogViewController: UIViewController {
-
+    
     // MARK: - Public Properties
     
     lazy var activityIndicator = UIActivityIndicatorView()
     
     // MARK: - Private Properties
-
-    private lazy var collectionWidth = collectionView.frame.width
     
+    private lazy var collectionWidth = collectionView.frame.width
     private let presenter: CatalogPresenter
     private var cellModels: [CatalogCellModel] = []
     
-    // MARK: - UIViews
-
+    // MARK: - UI
+    
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero,
@@ -49,28 +49,30 @@ final class CatalogViewController: UIViewController {
     //MARK: - Initializers
     
     init(servicesAssembly: ServicesAssembly) {
-        self.presenter = CatalogPresenterImpl(servicesAssembly: servicesAssembly)
+        presenter = CatalogPresenterImpl(servicesAssembly: servicesAssembly)
         super.init(nibName: nil, bundle: nil)
-        self.presenter.setView(self)
+        presenter.setView(self)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Public Methods
-
+    // MARK: - Overriden Methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
         presenter.viewDidLoad()
     }
+}
     
     // MARK: - Private Methods
     
-    private func setUp() {
+private extension CatalogViewController {
+    
+    func setUp() {
         view.addSubviews([sortButton, collectionView])
-        
         collectionView.addSubview(activityIndicator)
         activityIndicator.constraintCenters(to: collectionView)
         
@@ -88,7 +90,7 @@ final class CatalogViewController: UIViewController {
     }
     
     @objc
-    private func didTapSortButton() {
+    func didTapSortButton() {
         presenter.didTapSortButton()
     }
 }
@@ -143,9 +145,24 @@ extension CatalogViewController: UICollectionViewDelegateFlowLayout {
     ) -> CGFloat { 8 }
 }
 
+extension CatalogViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        presenter.didSelectCollection(with: indexPath.row)
+    }
+}
+
 // MARK: - CatalogView
 
 extension CatalogViewController: CatalogView {
+    
+    func presentCollection(on viewController: UIViewController) {
+        self.present(viewController, animated: true)
+    }
     
     func displayAlert(_ alert: UIAlertController) {
         self.present(alert, animated: true)
