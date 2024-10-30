@@ -18,6 +18,7 @@ protocol NftCollectionPresenter {
     func viewDidLoad()
     func didTapLikeButton(on indexPath: IndexPath)
     func didTapCartButton()
+    func didTapAuthorButton(on indexPath: IndexPath)
 }
 
 final class NftCollectionPresenterImpl {
@@ -39,6 +40,7 @@ final class NftCollectionPresenterImpl {
             stateDidChanged()
         }
     }
+    private let url = "https://practicum.yandex.ru/ios-developer"
     
     //MARK: - Initializers
     
@@ -160,6 +162,13 @@ extension NftCollectionPresenterImpl: NftCollectionPresenter {
     
     func didTapCartButton() {
         
+    }
+    
+    func didTapAuthorButton(on indexPath: IndexPath) {
+        let viewController = AuthorDetailsViewController(url: url)
+        viewController.hidesBottomBarWhenPushed = true
+        viewController.modalPresentationStyle = .fullScreen
+        view?.displayAuthorDetails(viewController)
     }
     
     func viewDidLoad() {

@@ -8,11 +8,19 @@
 import UIKit
 import Kingfisher
 
+protocol NftCollectionHeaderDelegate: AnyObject {
+    func didTapAuthorButton(in cell: NftCollectionHeader)
+}
+
 final class NftCollectionHeader: UICollectionViewCell, ReuseIdentifying {
     
     // MARK: - Constants
     
     static let identifier = "NftCollectionHeader"
+    
+    // MARK: - Public Properties
+    
+    weak var delegate: NftCollectionHeaderDelegate?
     
     // MARK: - UI
     
@@ -44,6 +52,17 @@ final class NftCollectionHeader: UICollectionViewCell, ReuseIdentifying {
         label.font = .caption1
         label.textColor = .blueUniversal
         return label
+    }()
+    
+    private lazy var authorNameButton: UIButton = {
+        let button = UIButton()
+        button.setTitleColor(.blueUniversal, for: .normal)
+        button.backgroundColor = .clear
+        button.titleLabel?.font = .caption1
+        button.addTarget(self,
+                         action: #selector(didTapAuthorButton),
+                         for: .touchUpInside)
+        return button
     }()
     
     private lazy var collectionDescriptionLabel: UILabel = {
@@ -78,7 +97,7 @@ final class NftCollectionHeader: UICollectionViewCell, ReuseIdentifying {
     func configure(with cellModel: NftCollectionHeaderModel) {
         nftCollectionCover.kf.setImage(with: cellModel.cover)
         collectionNameLabel.text = cellModel.name
-        authorNameLabel.text = cellModel.author
+        authorNameButton.setTitle(cellModel.author, for: .normal)
         collectionDescriptionLabel.text = cellModel.description
     }
 }
@@ -88,7 +107,7 @@ final class NftCollectionHeader: UICollectionViewCell, ReuseIdentifying {
 private extension NftCollectionHeader {
     
      func setUp() {
-        contentView.addSubviews([nftCollectionCover, collectionNameLabel, collectionAuthorLabel, authorNameLabel, collectionDescriptionLabel])
+        contentView.addSubviews([nftCollectionCover, collectionNameLabel, collectionAuthorLabel, authorNameButton, collectionDescriptionLabel])
         contentView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -111,13 +130,18 @@ private extension NftCollectionHeader {
             collectionAuthorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             collectionAuthorLabel.heightAnchor.constraint(equalToConstant: 18),
             
-            authorNameLabel.centerYAnchor.constraint(equalTo: collectionAuthorLabel.centerYAnchor),
-            authorNameLabel.leadingAnchor.constraint(equalTo: collectionAuthorLabel.trailingAnchor, constant: 4),
-            authorNameLabel.heightAnchor.constraint(equalToConstant: 28),
+            authorNameButton.centerYAnchor.constraint(equalTo: collectionAuthorLabel.centerYAnchor),
+            authorNameButton.leadingAnchor.constraint(equalTo: collectionAuthorLabel.trailingAnchor, constant: 4),
+            authorNameButton.heightAnchor.constraint(equalToConstant: 28),
             
-            collectionDescriptionLabel.topAnchor.constraint(equalTo: authorNameLabel.bottomAnchor),
+            collectionDescriptionLabel.topAnchor.constraint(equalTo: authorNameButton.bottomAnchor),
             collectionDescriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             collectionDescriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
+    }
+    
+    @objc
+    private func didTapAuthorButton() {
+        delegate?.didTapAuthorButton(in: self)
     }
 }
