@@ -33,4 +33,10 @@ final class ServicesAssembly {
             networkClient: networkClient
         )
     }
+    
+    var cartService: CartService {
+        CartServiceImpl(
+            networkClient: networkClient
+        )
+    }
 }
