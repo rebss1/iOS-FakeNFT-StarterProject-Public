@@ -19,7 +19,8 @@ final class NftCollectionAssembly {
         let presenter = NftCollectionPresenterImpl(
             input: input,
             nftService: servicesAssembler.nftService,
-            likedNftService: servicesAssembler.likedNftsService
+            likedNftService: servicesAssembler.likedNftsService,
+            cartService: servicesAssembler.cartService
         )
         let viewController = NftCollectionViewController(presenter: presenter)
         presenter.view = viewController

@@ -226,8 +226,11 @@ extension NftCollectionViewController: NftCollectionCellDelegate {
         collectionView.reloadSections(IndexSet(integer: 1))
     }
     
-    func didTapCartButton() {
-        presenter.didTapCartButton()
+    func didTapCartButton(in cell: NftCollectionCell) {
+        guard
+            let indexPath = collectionView.indexPath(for: cell)
+        else { return }
+        presenter.didTapCartButton(on: indexPath)
         collectionView.reloadSections(IndexSet(integer: 1))
     }
 }

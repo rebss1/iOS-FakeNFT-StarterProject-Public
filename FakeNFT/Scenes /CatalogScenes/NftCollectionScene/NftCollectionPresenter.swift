@@ -17,7 +17,7 @@ enum NftCollectionPresenterState {
 protocol NftCollectionPresenter {
     func viewDidLoad()
     func didTapLikeButton(on indexPath: IndexPath)
-    func didTapCartButton()
+    func didTapCartButton(on indexPath: IndexPath)
     func didTapAuthorButton(on indexPath: IndexPath)
 }
 
@@ -32,9 +32,12 @@ final class NftCollectionPresenterImpl {
     private var group = DispatchGroup()
     private var nfts: [Nft] = []
     private var likedNfts: [String] = []
+    private var nftsInCart: [String] = []
+    private var id: String?
     private let input: NftCollectionInput
     private let nftService: NftService
     private let likedNftService: LikedNftsService
+    private let cartService: CartService
     private var state = NftCollectionPresenterState.initial {
         didSet {
             stateDidChanged()
@@ -44,10 +47,11 @@ final class NftCollectionPresenterImpl {
     
     //MARK: - Initializers
     
-    init(input: NftCollectionInput, nftService: NftService, likedNftService: LikedNftsService) {
+    init(input: NftCollectionInput, nftService: NftService, likedNftService: LikedNftsService, cartService: CartService) {
         self.input = input
         self.nftService = nftService
         self.likedNftService = likedNftService
+        self.cartService = cartService
     }
 }
 
@@ -69,7 +73,15 @@ private extension NftCollectionPresenterImpl {
                 description: collection.description
             )
             view?.displayHeader(headerModel)
+            group.enter()
+            loadLikedNfts()
+            group.enter()
             loadNfts()
+            group.enter()
+            loadNftsInCart()
+            group.notify(queue: DispatchQueue.main) {
+                self.state = .data(self.nfts)
+            }
         case .data(let nfts):
             view?.hideLoading()
             let cellModels = nfts.map { nft in
@@ -79,7 +91,7 @@ private extension NftCollectionPresenterImpl {
                     rating: nft.rating,
                     price: nft.price,
                     isLiked: likedNfts.contains(where: { $0 == nft.id}),
-                    inCart: true
+                    inCart: nftsInCart.contains(where: { $0 == nft.id})
                 )
             }
             view?.displayCells(cellModels)
@@ -106,8 +118,33 @@ private extension NftCollectionPresenterImpl {
                 }
             }
         }
-        group.notify(queue: DispatchQueue.main) {
-            self.state = .data(self.nfts)
+        group.leave()
+    }
+    
+    func loadLikedNfts() {
+        likedNftService.sendLikedNftsGetRequest() { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let nfts):
+                likedNfts = nfts.likes
+            case .failure(let error):
+                state = .failed(error)
+            }
+            group.leave()
+        }
+    }
+    
+    func loadNftsInCart() {
+        cartService.sendCartGetRequest() { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let cart):
+                nftsInCart = cart.nfts
+                id = cart.id
+            case .failure(let error):
+                state = .failed(error)
+            }
+            group.leave()
         }
     }
     
@@ -122,6 +159,7 @@ private extension NftCollectionPresenterImpl {
         
         let actionText = NSLocalizedString("Error.repeat", comment: "")
         return ErrorModel(message: message, actionText: actionText) { [weak self] in
+            self?.nfts = []
             self?.state = .loading
         }
     }
@@ -129,8 +167,22 @@ private extension NftCollectionPresenterImpl {
     func putLikedNfts(_ likedNfts: [String]) {
         likedNftService.sendLikedNftsPutRequest(likedNfts: likedNfts) { [weak self] result in
             switch result {
-            case .success(_):
-//                self?.likedNfts = nfts.asArray()
+            case .success:
+                if let nfts = self?.nfts {
+                    self?.state = .data(nfts)
+                }
+            case .failure(let error):
+                self?.state = .failed(error)
+                break
+            }
+        }
+    }
+    
+    func putNftsInCart(_ nftsInCart: [String]) {
+        guard let id = id else { return }
+        cartService.sendCartPutRequest(id: id, nfts: nftsInCart) { [weak self] result in
+            switch result {
+            case .success:
                 if let nfts = self?.nfts {
                     self?.state = .data(nfts)
                 }
@@ -160,8 +212,20 @@ extension NftCollectionPresenterImpl: NftCollectionPresenter {
         }
     }
     
-    func didTapCartButton() {
-        
+    func didTapCartButton(on indexPath: IndexPath) {
+        let nft = nfts[indexPath.row].id
+        if nftsInCart.contains(where: { $0 == nft }) {
+            nftsInCart.removeAll(where: {
+                $0 == nft
+            })
+        } else {
+            nftsInCart.append(nft)
+        }
+        if nftsInCart.isEmpty {
+            putNftsInCart(["null"])
+        } else {
+            putNftsInCart(nftsInCart)
+        }
     }
     
     func didTapAuthorButton(on indexPath: IndexPath) {
