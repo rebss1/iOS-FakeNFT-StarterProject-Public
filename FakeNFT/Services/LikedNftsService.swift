@@ -7,13 +7,15 @@
 
 import Foundation
 
-typealias LikedNftsPutCompletion = (Result<LikedNftsPutResponse, Error>) -> Void
+typealias LikedNftsGetCompletion = (Result<Likes, Error>) -> Void
+typealias LikedNftsPutCompletion = (Result<Bool, Error>) -> Void
 
 protocol LikedNftsService {
     func sendLikedNftsPutRequest(
         likedNfts: [String],
         completion: @escaping LikedNftsPutCompletion
     )
+    func sendLikedNftsGetRequest(completion: @escaping LikedNftsGetCompletion)
 }
 
 final class LikedNftsServiceImpl: LikedNftsService {
@@ -24,13 +26,27 @@ final class LikedNftsServiceImpl: LikedNftsService {
         self.networkClient = networkClient
     }
     
+    func sendLikedNftsGetRequest(completion: @escaping LikedNftsGetCompletion) {
+        let request = LikedNftsGetRequest()
+        networkClient.send(request: request, type: Likes.self) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let likes):
+                    completion(.success(likes))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
     func sendLikedNftsPutRequest(likedNfts: [String], completion: @escaping LikedNftsPutCompletion) {
         let dto = LikedNftsDtoObject(likedNfts: likedNfts)
         let request = LikedNftsPutRequest(dto: dto)
-        networkClient.send(request: request, type: LikedNftsPutResponse.self) { result in
+        networkClient.send(request: request) { result in
             switch result {
-            case .success(let putResponse):
-                completion(.success(putResponse))
+            case .success:
+                completion(.success(true))
             case .failure(let error):
                 completion(.failure(error))
             }

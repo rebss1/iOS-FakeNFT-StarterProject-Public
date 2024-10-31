@@ -34,11 +34,11 @@ struct LikedNftsDtoObject: Dto {
 struct LikedNftsPutResponse: Decodable {
     let likedNfts: String?
     
-    func asArray() -> [String] {
-        if let likedNfts = likedNfts {
-            return likedNfts.components(separatedBy: ",")
-        } else {
-            return []
-        }
-    }
+//    func asArray() -> [String] {
+//        if let likedNfts = likedNfts {
+//            return likedNfts.components(separatedBy: ",")
+//        } else {
+//            return []
+//        }
+//    }
 }
