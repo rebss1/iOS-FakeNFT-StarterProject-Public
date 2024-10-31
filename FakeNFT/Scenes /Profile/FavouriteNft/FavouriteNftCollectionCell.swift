@@ -8,11 +8,16 @@
 import UIKit
 import Kingfisher
 
-final class ProfileFavouriteNFTCollectionCell: UICollectionViewCell {
+protocol ProfileFavouriteNFTCollectionCellDelegate: AnyObject {
     
-    static let reuseIdentifier: String = "FavouriteNFTCollectionCell"
+    func changeLike(id: String, isLiked: Bool)
+}
+
+final class ProfileFavouriteNFTCollectionCell: UICollectionViewCell, ReuseIdentifying {
     
     private static let totalStars = 5
+    
+    weak var delegate: ProfileFavouriteNFTCollectionCellDelegate?
     
     private lazy var likeButton: UIButton = {
         let button: UIButton = UIButton()
@@ -60,6 +65,8 @@ final class ProfileFavouriteNFTCollectionCell: UICollectionViewCell {
     
     private lazy var viewNFTContent: UIView = UIView()
     
+    private var model: FavouriteNFT?
+    
     override init(frame: CGRect){
         super.init(frame: frame)
         
@@ -72,6 +79,8 @@ final class ProfileFavouriteNFTCollectionCell: UICollectionViewCell {
     }
     
     func configCell(_ model: FavouriteNFT) {
+        self.model = model
+        
         labelName.text = model.name
         labelPriceValue.text = "\(model.price) ETH"
         
@@ -79,7 +88,7 @@ final class ProfileFavouriteNFTCollectionCell: UICollectionViewCell {
             imageViewNFT.kf.setImage(with: url)
         }
         
-        model.isLiked ? likeButton.setImage(UIImage(named: "profileImages/likeActive"), for: .normal) : likeButton.setImage(UIImage(named: "profileImages/likeNoActive"), for: .normal)
+        model.isLiked ? likeButton.setImage(.favoritesActive, for: .normal) : likeButton.setImage(.favoritesNoActive, for: .normal)
         
         stackRating.arrangedSubviews.forEach {
             $0.removeFromSuperview()
@@ -155,8 +164,10 @@ final class ProfileFavouriteNFTCollectionCell: UICollectionViewCell {
     }
     
     @objc
-    private func likeButtonTapped(){
-        print("like button tapped")
+    private func likeButtonTapped() {
+        guard let model else { return }
+        
+        delegate?.changeLike(id: model.id, isLiked: !model.isLiked)
     }
     
 }

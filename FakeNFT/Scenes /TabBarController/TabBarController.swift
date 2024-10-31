@@ -34,8 +34,11 @@ final class TabBarController: UITabBarController {
             profileId: ProfileConstants.profileId
         )
         
-        let profileController = ProfileViewController(presenter: profilePresenter)
+        let profileController = ProfileViewController(servicesAssembly: servicesAssembly)
+        
+        profileController.presenter = profilePresenter
         profilePresenter.profileView = profileController
+        
         let profileNavigationController = UINavigationController(rootViewController: profileController)
         
         catalogViewController.tabBarItem = UITabBarItem(title: NSLocalizedString("Tab.catalog", comment: ""),
