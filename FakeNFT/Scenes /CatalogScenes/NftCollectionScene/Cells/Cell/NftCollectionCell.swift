@@ -10,7 +10,7 @@ import Kingfisher
 
 protocol NftCollectionCellDelegate: AnyObject {
     func didTapLikeButton(in cell: NftCollectionCell)
-    func didTapCartButton()
+    func didTapCartButton(in cell: NftCollectionCell)
 }
 
 final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
@@ -162,6 +162,6 @@ private extension NftCollectionCell {
     
     @objc
     func didTapCartButton() {
-        delegate?.didTapCartButton()
+        delegate?.didTapCartButton(in: self)
     }
 }

@@ -11,6 +11,7 @@ protocol NftCollectionView: AnyObject, ErrorView, LoadingView {
     func displayHeader(_ headerModel: NftCollectionHeaderModel)
     func displayCells(_ cellModels: [NftCollectionCellModel])
     func displayAlert(_ alert: UIAlertController)
+    func displayAuthorDetails(_ detailsViewController: AuthorDetailsViewController)
 }
 
 final class NftCollectionViewController: UIViewController {
@@ -126,6 +127,7 @@ extension NftCollectionViewController: UICollectionViewDataSource {
             if let headerModel = self.headerModel {
                 cell.configure(with: headerModel)
             }
+            cell.delegate = self
             return cell
         case 1:
             let cell: NftCollectionCell = collectionView.dequeueReusableCell(indexPath: indexPath)
@@ -204,7 +206,11 @@ extension NftCollectionViewController: NftCollectionView {
     }
     
     func displayAlert(_ alert: UIAlertController) {
-        self.present(alert, animated: true)
+        present(alert, animated: true)
+    }
+    
+    func displayAuthorDetails(_ detailsViewController: AuthorDetailsViewController) {
+        present(detailsViewController, animated: true)
     }
 }
 
@@ -220,8 +226,21 @@ extension NftCollectionViewController: NftCollectionCellDelegate {
         collectionView.reloadSections(IndexSet(integer: 1))
     }
     
-    func didTapCartButton() {
-        presenter.didTapCartButton()
+    func didTapCartButton(in cell: NftCollectionCell) {
+        guard
+            let indexPath = collectionView.indexPath(for: cell)
+        else { return }
+        presenter.didTapCartButton(on: indexPath)
         collectionView.reloadSections(IndexSet(integer: 1))
+    }
+}
+
+extension NftCollectionViewController: NftCollectionHeaderDelegate {
+    
+    func didTapAuthorButton(in cell: NftCollectionHeader) {
+        guard
+            let indexPath = collectionView.indexPath(for: cell)
+        else { return }
+        presenter.didTapAuthorButton(on: indexPath)
     }
 }
