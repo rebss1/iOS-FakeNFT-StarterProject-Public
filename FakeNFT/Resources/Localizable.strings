@@ -6,3 +6,8 @@
 "Error.unknown" = "Произошла неизвестная ошибка";
 "Error.repeat" = "Повторить";
 "Error.title" = "Ошибка";
+"Sort.title" = "Сортировка";
+"Sort.byName" = "По названию";
+"Sort.byCount" = "По количеству NFT";
+"Sort.cancel" = "Закрыть";
+"Collection.author" = "Автор коллекции:";
