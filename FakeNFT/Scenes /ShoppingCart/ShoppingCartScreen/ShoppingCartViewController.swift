@@ -7,8 +7,19 @@
 
 import UIKit
 
+protocol ShoppingCartView: AnyObject, ErrorView, LoadingView {
+    func displayCells(_ cellModels: [ShoppingCartCellModel], price: Float, count: Int)
+    func displayAlert(_ alert: UIAlertController)
+    func presentCollection(on viewController: UIViewController)
+    func deleteBlur()
+    func reloadData()
+}
+
 final class ShoppingCartViewController: UIViewController {
     
+    lazy var activityIndicator = UIActivityIndicatorView()
+    private var presenter: ShoppingCartPresenter
+    private var cellModels: [ShoppingCartCellModel] = []
     private var blurEffectView: UIVisualEffectView?
     private lazy var bottomView: UIView = {
         let view = UIView()
@@ -17,6 +28,7 @@ final class ShoppingCartViewController: UIViewController {
         view.layer.masksToBounds = true
         view.layer.cornerRadius = 12
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        view.isHidden = true
         return view
     }()
     private lazy var tableView: UITableView = {
@@ -33,21 +45,31 @@ final class ShoppingCartViewController: UIViewController {
     private lazy var countNFTLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "0 NFT"
         label.textColor = .blackCustom
         label.font = .caption1
+        return label
+    }()
+    private lazy var emptyLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .blackCustom
+        label.text = NSLocalizedString("Cart.empty", comment: "Корзина пуста")
+        label.font = .bodyBold
+        label.isHidden = true
         return label
     }()
     private lazy var priceNFTLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "0 ETH"
         label.textColor = .greenUniversal
         label.font = .bodyBold
         return label
     }()
     private lazy var bottomButton: UIButton = {
         let button = Button(title: NSLocalizedString("Cart.pay", comment: "К оплате"), style: .normal, color: .blackCustom)
+        if let titleLabel = button.titleLabel {
+            titleLabel.font = .bodyBold
+        }
         button.addTarget(self, action: #selector(showPayScreen), for: .touchUpInside)
         button.layer.borderWidth = 0
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -59,14 +81,26 @@ final class ShoppingCartViewController: UIViewController {
         button.setImage(UIImage(named: "sort"), for: .normal)
         button.tintColor = UIColor.blackCustom
         button.addTarget(self, action: #selector(showActionSheet), for: .touchUpInside)
+        button.isHidden = true
         return button
     }()
+
+    init(servicesAssembly: ServicesAssembly) {
+        presenter = ShoppingCartPresenterImpl(servicesAssembly: servicesAssembly, nftService: servicesAssembly.nftService, orderService: servicesAssembly.orderService)
+        super.init(nibName: nil, bundle: nil)
+        presenter.setView(self)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        presenter.viewDidLoad()
     }
-    
+
     private func setupUI() {
         view.backgroundColor = .whiteCustom
         setupBottomView()
@@ -75,6 +109,7 @@ final class ShoppingCartViewController: UIViewController {
         setupPriceNFT()
         setupSortButton()
         setupTableView()
+        setupEmptyLabel()
     }
     
     private func setupBottomView() {
@@ -99,6 +134,12 @@ final class ShoppingCartViewController: UIViewController {
         countNFTLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16).isActive = true
     }
     
+    private func setupEmptyLabel() {
+        view.addSubview(emptyLabel)
+        emptyLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        emptyLabel.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+    }
+    
     private func setupPriceNFT() {
         bottomView.addSubview(priceNFTLabel)
         priceNFTLabel.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -16).isActive = true
@@ -119,48 +160,16 @@ final class ShoppingCartViewController: UIViewController {
         tableView.bottomAnchor.constraint(equalTo: bottomView.topAnchor, constant: -20).isActive = true
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        tableView.addSubview(activityIndicator)
+        activityIndicator.constraintCenters(to: tableView)
     }
-    
-    func deleteBLur() {
-        blurEffectView?.removeFromSuperview()
-    }
-    
-    func presentScreen(image: UIImage){
-        let blurEffect = UIBlurEffect(style: .light)
-        blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView?.frame = self.view.bounds
-        blurEffectView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        self.view.addSubview(blurEffectView!)
-        let deleteScreen = DeleteScreenViewController(image: image)
-        deleteScreen.parentController = self
-        deleteScreen.modalPresentationStyle = .overCurrentContext
-        present(deleteScreen, animated: true)
-    }
-    
+        
     @objc func showPayScreen() {
-        let payScreen = PayScreenViewController()
-        let navController = payScreen.wrapWithNavigationController()
-        navController.modalPresentationStyle = .overCurrentContext
-        present(navController, animated: true)
+        presenter.didTapPayButton()
     }
     
     @objc func showActionSheet() {
-        let actionSheet = UIAlertController(title: NSLocalizedString("Cart.sort", comment: "Сортировка"), message: nil, preferredStyle: .actionSheet)
-        //TODO: Обработать сортировку данных с сервера
-        let priceAction = UIAlertAction(title: NSLocalizedString("Cart.byPrice", comment: "По цене"), style: .default, handler: { _ in
-        })
-        let ratingAction = UIAlertAction(title: NSLocalizedString("Cart.byRaiting", comment: "По рейтингу"), style: .default, handler: { _ in
-        })
-        let nameAction = UIAlertAction(title: NSLocalizedString("Cart.byName", comment: "По названию"), style: .default, handler: { _ in
-        })
-        let cancelAction = UIAlertAction(title: NSLocalizedString("Cart.close", comment: "Закрыть"), style: .cancel, handler: nil)
-        
-        actionSheet.addAction(priceAction)
-        actionSheet.addAction(ratingAction)
-        actionSheet.addAction(nameAction)
-        actionSheet.addAction(cancelAction)
-        
-        present(actionSheet, animated: true, completion: nil)
+        presenter.didTapSortButton()
     }
 }
 
@@ -172,13 +181,74 @@ extension ShoppingCartViewController: UITableViewDelegate {
 
 extension ShoppingCartViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        5 //TODO: Сделать обработку данных с сервера
+        cellModels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: CartTableViewCell = tableView.dequeueReusableCell()
         cell.accessoryType = .none
+        let cellModel = cellModels[indexPath.row]
+        cell.changeCell(with: cellModel)
         cell.parentController = self
+        cell.delegate = self
         return cell
     }
+}
+
+extension ShoppingCartViewController: ShoppingCartView {
+    func deleteBlur() {
+        blurEffectView?.removeFromSuperview()
+    }
+    
+    func reloadData() {
+        presenter.reloadData()
+    }
+
+    
+    func presentCollection(on viewController: UIViewController) {
+        self.present(viewController, animated: true)
+    }
+
+    func displayCells(_ cellModels: [ShoppingCartCellModel], price: Float, count: Int) {
+        
+        if cellModels.count == 0 {
+            bottomView.isHidden = true
+            sortButton.isHidden = true
+            emptyLabel.isHidden = false
+        } else {
+            emptyLabel.isHidden = true
+            bottomView.isHidden = false
+            sortButton.isHidden = false
+        }
+        self.cellModels = cellModels
+        tableView.reloadData()
+        countNFTLabel.text = "\(count) NFT"
+        priceNFTLabel.text = "\(price) NFT"
+    }
+    
+    func displayAlert(_ alert: UIAlertController) {
+        self.present(alert, animated: true)
+    }
+}
+
+extension ShoppingCartViewController: ShoppingCartCellProtocol {
+    func didTapDeleteButton(in cell: CartTableViewCell) {
+        if let indexPath = tableView.indexPath(for: cell) {
+            let blurEffect = UIBlurEffect(style: .light)
+            blurEffectView = UIVisualEffectView(effect: blurEffect)
+            blurEffectView?.frame = self.view.bounds
+            blurEffectView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            self.view.addSubview(blurEffectView!)
+            presenter.didTapDeleteButton(on: indexPath)
+        }
+    }
+}
+
+extension ShoppingCartViewController {
+    func presentScreen(view: UIViewController) {
+        presentCollection(on: view)
+    }
+    
+    
+    
 }

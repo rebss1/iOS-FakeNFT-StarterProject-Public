@@ -8,6 +8,10 @@
 import UIKit
 import WebKit
 
+private enum Constants {
+    static let URLString: String = "https://yandex.ru/legal/practicum_termsofuse/"
+}
+
 final class WebViewScreenViewController: UIViewController, WKNavigationDelegate {
     
     private var webView: WKWebView = {
@@ -34,7 +38,7 @@ final class WebViewScreenViewController: UIViewController, WKNavigationDelegate 
     }
     
     private func startLoadingWeb() {
-        if let url = URL(string: "https://yandex.ru/legal/practicum_termsofuse/") {
+        if let url = URL(string: Constants.URLString) {
             let request = URLRequest(url: url)
             webView.load(request)
         }

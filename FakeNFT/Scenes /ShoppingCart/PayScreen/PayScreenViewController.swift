@@ -7,8 +7,18 @@
 
 import UIKit
 
+protocol PayScreenView: AnyObject, ErrorView, LoadingView {
+    func displayCells(_ cellModels: [PayScreenCellModel])
+    func displayAlert(_ alert: UIAlertController)
+    func present(on viewController: UIViewController)
+    func dismissScreen()
+}
+
 final class PayScreenViewController: UIViewController {
     
+    lazy var activityIndicator = UIActivityIndicatorView()
+    private var presenter: PayScreenPresenter
+    private var cellModels: [PayScreenCellModel] = []
     private lazy var backButton: UIBarButtonItem = {
         let button = UIBarButtonItem(image: UIImage(named: "backward"), style: .plain, target: self, action: #selector(leftButtonTapped))
         button.tintColor = UIColor.blackCustom
@@ -28,12 +38,10 @@ final class PayScreenViewController: UIViewController {
         view.layer.masksToBounds = true
         view.layer.cornerRadius = 12
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     private lazy var bottomLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.text = NSLocalizedString("Pay.condition", comment: "Совершая покупку, вы соглашаетесь с условиями")
         label.textColor = .blackCustom
         label.font = .caption2
@@ -68,10 +76,20 @@ final class PayScreenViewController: UIViewController {
         return collectionView
     }()
     
+    init(presenter: PayScreenPresenter) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+        
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .whiteCustom
         setupUI()
+        presenter.viewDidLoad()
     }
     
     private func setupUI() {
@@ -127,7 +145,9 @@ final class PayScreenViewController: UIViewController {
     
     private func setupCollectionView() {
         view.addSubview(collection)
-        
+        collection.addSubview(activityIndicator)
+        activityIndicator.constraintCenters(to: collection)
+
         collection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         collection.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         collection.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
@@ -139,14 +159,11 @@ final class PayScreenViewController: UIViewController {
     }
     
     @objc func bottomButtonTapped() {
-        let webScreen = WebViewScreenViewController()
-        let navController = webScreen.wrapWithNavigationController()
-        navController.modalPresentationStyle = .overCurrentContext
-        present(navController, animated: true)
+        presenter.didTapWebViewButton()
     }
     
     @objc func payButtonTapped() {
-        //TODO: обработка запроса оплаты
+        presenter.didTapPayButton()
     }
 }
 
@@ -155,6 +172,7 @@ extension PayScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? PayScreenCollectionViewCell {
             cell.setSelected(true)
+            presenter.didSelectCurrency(on: indexPath)
         }
     }
     
@@ -168,12 +186,12 @@ extension PayScreenViewController: UICollectionViewDelegate {
 extension PayScreenViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        8
+        cellModels.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: PayScreenCollectionViewCell = collection.dequeueReusableCell(indexPath: indexPath)
-        cell.changeUI(number: indexPath.row)
+        cell.changeUI(with: cellModels[indexPath.row])
         return cell
     }
     
@@ -200,3 +218,22 @@ extension PayScreenViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+extension PayScreenViewController: PayScreenView {
+    
+    func dismissScreen(){
+        dismiss(animated: true)
+    }
+
+    func displayCells(_ cellModels: [PayScreenCellModel]) {
+        self.cellModels = cellModels
+        collection.reloadData()
+    }
+    
+    func displayAlert(_ alert: UIAlertController) {
+        self.present(alert, animated: true)
+    }
+    
+    func present(on viewController: UIViewController) {
+        self.present(viewController, animated: true)
+    }
+}

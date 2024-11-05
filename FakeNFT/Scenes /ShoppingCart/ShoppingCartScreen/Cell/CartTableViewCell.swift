@@ -6,29 +6,29 @@
 //
 
 import UIKit
+import Kingfisher
+
 
 final class CartTableViewCell: UITableViewCell, ReuseIdentifying {
     
     static let defaultReuseIdentifier = "CustomTableCell"
     weak var parentController: ShoppingCartViewController?
+    weak var delegate: ShoppingCartCellProtocol?
     private let NFTImage = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.layer.masksToBounds = true
         image.layer.cornerRadius = 12
-        image.image = UIImage(named: "shiba")// Mock данные, в дальшейшем заменятся на данные с сервера
         return image
     }()
     private let raitingImage = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
-        image.image = UIImage(named: "fiveStars") // Mock данные, в дальшейшем заменятся на данные с сервера
         return image
     }()
     private let nameLable = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Name"
         label.textColor = .blackCustom
         label.font = .bodyBold
         return label
@@ -44,7 +44,6 @@ final class CartTableViewCell: UITableViewCell, ReuseIdentifying {
     private let countPriceLabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "0 ETH"
         label.textColor = .blackCustom
         label.font = .bodyBold
         return label
@@ -120,10 +119,25 @@ final class CartTableViewCell: UITableViewCell, ReuseIdentifying {
     }
     
     @objc private func deleteButtonTapped() {
-        parentController?.presentScreen(image: NFTImage.image ?? UIImage())
+        delegate?.didTapDeleteButton(in: self)
     }
     
-    private func changeCell(){
-        //TODO: Сделать обработку данных с сервера
+    func changeCell(with cellModel: ShoppingCartCellModel){
+        nameLable.text = cellModel.name
+        NFTImage.kf.setImage(with: cellModel.image)
+        countPriceLabel.text = "\(cellModel.price) ETH"
+        if cellModel.raiting == 0 {
+            raitingImage.image = UIImage(named: "zeroStars")
+        } else if cellModel.raiting == 1 {
+            raitingImage.image = UIImage(named: "oneStars")
+        } else if cellModel.raiting == 2 {
+            raitingImage.image = UIImage(named: "twoStars")
+        } else if cellModel.raiting == 3 {
+            raitingImage.image = UIImage(named: "threeStars")
+        } else if cellModel.raiting == 4 {
+            raitingImage.image = UIImage(named: "fourStars")
+        } else if cellModel.raiting == 5 {
+            raitingImage.image = UIImage(named: "fiveStars")
+        }
     }
 }
