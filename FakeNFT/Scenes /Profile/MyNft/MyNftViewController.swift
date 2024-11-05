@@ -34,9 +34,7 @@ final class MyNFTViewController: UIViewController {
     
     private lazy var sortButton: UIBarButtonItem = {
         let button = UIBarButtonItem(
-            image: UIImage(
-                named: "profileImages/sort"
-            )?.withRenderingMode(.alwaysTemplate),
+            image: .sort.withRenderingMode(.alwaysTemplate),
             style: .plain,
             target: self,
             action: #selector(sortButtonTapped)
@@ -52,7 +50,7 @@ final class MyNFTViewController: UIViewController {
         table.dataSource = self
         table.register(
             ProfileMyNFTTableCell.self,
-            forCellReuseIdentifier: ProfileMyNFTTableCell.reuseIdentifier
+            forCellReuseIdentifier: ProfileMyNFTTableCell.defaultReuseIdentifier
         )
         table.separatorStyle = .none
         return table
@@ -82,9 +80,8 @@ final class MyNFTViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        ProgressHUD.dismiss()
-        
         super.viewWillDisappear(animated)
+        ProgressHUD.dismiss()
     }
     
     //MARK: - Private Methods
@@ -138,17 +135,19 @@ final class MyNFTViewController: UIViewController {
         )
         alert.addAction(UIAlertAction(title: "По цене",
                                       style: .default) { _ in
-            
+            self.presenter?.changeSort(.price)
         })
         alert.addAction(UIAlertAction(
             title: "По рейтингу",
             style: .default
         ) { _ in
+            self.presenter?.changeSort(.rating)
         })
         alert.addAction(UIAlertAction(
             title: "По названию",
             style: .default
         ) { _ in
+            self.presenter?.changeSort(.name)
         })
         alert.addAction(UIAlertAction(
             title: "Закрыть",
@@ -172,12 +171,13 @@ extension MyNFTViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: ProfileMyNFTTableCell.reuseIdentifier,
+            withIdentifier: ProfileMyNFTTableCell.defaultReuseIdentifier,
             for: indexPath
         ) as? ProfileMyNFTTableCell else {
             return ProfileMyNFTTableCell()
         }
         
+        cell.delegate = self
         cell.configCell(visibleNfts[indexPath.row])
         
         return cell
@@ -226,7 +226,15 @@ extension MyNFTViewController: MyNFTViewControllerProtocol {
 
 // MARK: ErrorView
 extension MyNFTViewController: ErrorView {
-    
+
+}
+
+// MARK: ProfileMyNFTTableCellDelegate
+extension MyNFTViewController: ProfileMyNFTTableCellDelegate {
+
+    func changeLike(id: String, isLiked: Bool) {
+        presenter?.changeLike(id: id, isLiked: isLiked)
+    }
 }
 
 
