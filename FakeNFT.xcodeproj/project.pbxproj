@@ -65,6 +65,7 @@
 		5BD82D302CD24F7A005119EC /* ProfileUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD82D2F2CD24F74005119EC /* ProfileUpdate.swift */; };
 		5BD82D322CD284CB005119EC /* UpdateProfileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD82D312CD284C1005119EC /* UpdateProfileRequest.swift */; };
 		5BD82D362CD28A8B005119EC /* ProfileSortService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD82D352CD28A76005119EC /* ProfileSortService.swift */; };
+		5BD82D3A2CDA987F005119EC /* DefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD82D392CDA987C005119EC /* DefaultsManager.swift */; };
 		941EB6312CBBCE2E00A93958 /* ShoppingCartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941EB6302CBBCE1F00A93958 /* ShoppingCartViewController.swift */; };
 		941EB6352CBBCE7500A93958 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941EB6342CBBCE6D00A93958 /* ProfileViewController.swift */; };
 		941EB6372CBC091D00A93958 /* CatalogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941EB6362CBC091300A93958 /* CatalogViewController.swift */; };
@@ -156,6 +157,7 @@
 		5BD82D2F2CD24F74005119EC /* ProfileUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileUpdate.swift; sourceTree = "<group>"; };
 		5BD82D312CD284C1005119EC /* UpdateProfileRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProfileRequest.swift; sourceTree = "<group>"; };
 		5BD82D352CD28A76005119EC /* ProfileSortService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSortService.swift; sourceTree = "<group>"; };
+		5BD82D392CDA987C005119EC /* DefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsManager.swift; sourceTree = "<group>"; };
 		941EB6302CBBCE1F00A93958 /* ShoppingCartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCartViewController.swift; sourceTree = "<group>"; };
 		941EB6342CBBCE6D00A93958 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		941EB6362CBC091300A93958 /* CatalogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogViewController.swift; sourceTree = "<group>"; };
@@ -283,6 +285,7 @@
 		3F68069529CBBAF100B4F915 /* FakeNFT */ = {
 			isa = PBXGroup;
 			children = (
+				5BD82D392CDA987C005119EC /* DefaultsManager.swift */,
 				3F68069629CBBAF100B4F915 /* AppDelegate.swift */,
 				3F68069829CBBAF100B4F915 /* SceneDelegate.swift */,
 				E1CD40DA2A96BE9B00BE7FE8 /* Resources */,
@@ -706,6 +709,7 @@
 				5B8C57E42CC01E51000BC1AE /* ProfileTableCell.swift in Sources */,
 				0CF2C2E12A784C7000FDC837 /* LinePageControl.swift in Sources */,
 				5BD82D012CC9429F005119EC /* MyNftPresenter.swift in Sources */,
+				5BD82D3A2CDA987F005119EC /* DefaultsManager.swift in Sources */,
 				3F6806D329CBBE9600B4F915 /* NetworkRequest.swift in Sources */,
 				5BD82D182CC997C9005119EC /* ProfileResponse.swift in Sources */,
 				3F6806D129CBBE6B00B4F915 /* NetworkClient.swift in Sources */,
