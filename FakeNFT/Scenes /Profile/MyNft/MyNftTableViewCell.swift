@@ -133,8 +133,8 @@ final class ProfileMyNFTTableCell: UITableViewCell, ReuseIdentifying {
             imageViewNFT.kf.setImage(with: url)
         }
         
-        model.isLiked ? likeButton.setImage(.favoritesActive, for: .normal) :
-        likeButton.setImage(.favoritesNoActive, for: .normal)
+        model.isLiked ? likeButton.setImage(.likeActive, for: .normal) :
+        likeButton.setImage(.likeNoActive, for: .normal)
         
 
         stackRating.arrangedSubviews.forEach {

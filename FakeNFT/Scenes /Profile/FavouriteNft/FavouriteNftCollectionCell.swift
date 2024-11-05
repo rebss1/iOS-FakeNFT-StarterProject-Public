@@ -88,7 +88,7 @@ final class ProfileFavouriteNFTCollectionCell: UICollectionViewCell, ReuseIdenti
             imageViewNFT.kf.setImage(with: url)
         }
         
-        model.isLiked ? likeButton.setImage(.favoritesActive, for: .normal) : likeButton.setImage(.favoritesNoActive, for: .normal)
+        model.isLiked ? likeButton.setImage(.likeActive, for: .normal) : likeButton.setImage(.likeNoActive, for: .normal)
         
         stackRating.arrangedSubviews.forEach {
             $0.removeFromSuperview()
