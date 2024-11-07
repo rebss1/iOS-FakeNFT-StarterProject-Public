@@ -201,3 +201,4 @@
 
 **Ссылки на демонстрации:**
 Демонстрация эпика корзина: https://www.loom.com/share/86eae70e30bd4a0686ba600ba03403cd?sid=d2f05af3-79d3-4cb7-95cf-d4d858f338ec
+Демонстрация эпика каталог: https://www.loom.com/share/ef48e3e6cb7142258ee1efe4a5b400fa?sid=30a84059-e0b8-4a51-9aee-b3b07339214b
