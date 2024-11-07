@@ -28,7 +28,6 @@
 		3C3006172CD731F0002BA6CD /* OrderRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3006162CD731F0002BA6CD /* OrderRequests.swift */; };
 		3C3006192CD732B3002BA6CD /* OrderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3006182CD732B3002BA6CD /* OrderService.swift */; };
 		3C30061B2CD73F74002BA6CD /* ShoppingCartCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C30061A2CD73F74002BA6CD /* ShoppingCartCellModel.swift */; };
-		3C3006252CD86D55002BA6CD /* DefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3006242CD86D55002BA6CD /* DefaultsManager.swift */; };
 		3C30062D2CD9758A002BA6CD /* ShoppingCartCellProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C30062C2CD9758A002BA6CD /* ShoppingCartCellProtocol.swift */; };
 		3C30062F2CDA63DC002BA6CD /* PayScreenPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C30062E2CDA63DC002BA6CD /* PayScreenPresenter.swift */; };
 		3C3006352CDA645A002BA6CD /* PayScreenCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3006342CDA645A002BA6CD /* PayScreenCellModel.swift */; };
@@ -485,7 +484,6 @@
 				5BD82D352CD28A76005119EC /* ProfileSortService.swift */,
 				5BD82D1D2CC9990E005119EC /* ProfileNftService.swift */,
 				5BD82D152CC997A3005119EC /* ProfileService.swift */,
-				3FC8C38F29D245250081F015 /* Requests */,
 				0C79EE6B2A76DE2E00EE90EA /* ServicesAssembly.swift */,
 				558E39E62C68CE0900FB86AC /* NftService.swift */,
 				941EB6562CBE626F00A93958 /* NftCollectionService.swift */,
@@ -593,6 +591,7 @@
 			isa = PBXGroup;
 			children = (
 				5BD82D392CDA987C005119EC /* DefaultsManager.swift */,
+				3C3006242CD86D55002BA6CD /* DefaultsManager.swift */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -957,7 +956,6 @@
 				94D495282CD27418008D468C /* CartService.swift in Sources */,
 				0CF2C2DB2A783C1B00FDC837 /* LoadingView.swift in Sources */,
 				3C30060F2CD5F87C002BA6CD /* Order.swift in Sources */,
-				3C3006252CD86D55002BA6CD /* DefaultsManager.swift in Sources */,
 				558E39E72C68CE0A00FB86AC /* NftService.swift in Sources */,
 				94D494E82CC8FAEF008D468C /* NftCollectionHeaderModel.swift in Sources */,
 				941EB6452CBC104F00A93958 /* UIView+parentViewController.swift in Sources */,
@@ -1189,7 +1187,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5VR55PX3MR;
+				DEVELOPMENT_TEAM = U38SYYH567;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FakeNFT/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1202,7 +1200,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dzyuba.FakeNFT;
+				PRODUCT_BUNDLE_IDENTIFIER = com.loshilovIlya.FakeNFT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1217,7 +1215,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5VR55PX3MR;
+				DEVELOPMENT_TEAM = U38SYYH567;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FakeNFT/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1230,7 +1228,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dzyuba.FakeNFT;
+				PRODUCT_BUNDLE_IDENTIFIER = com.loshilovIlya.FakeNFT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

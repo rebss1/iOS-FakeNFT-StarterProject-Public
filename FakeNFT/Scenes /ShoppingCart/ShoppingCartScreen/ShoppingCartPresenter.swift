@@ -217,7 +217,12 @@ extension ShoppingCartPresenterImpl: ShoppingCartPresenter {
     }
     
     func didTapDeleteButton(on indexPath: IndexPath) {
-        let selectedNft = sortedNfts[indexPath.row]
+        let selectedNft: Nft
+        if sortedNfts.isEmpty {
+            selectedNft = nfts[indexPath.row]
+        } else {
+            selectedNft = sortedNfts[indexPath.row]
+        }
         let deleteScreen = DeleteScreenViewController(image: selectedNft.images[0], id: selectedNft.id)
         deleteScreen.parentController = self
         deleteScreen.modalPresentationStyle = .overCurrentContext

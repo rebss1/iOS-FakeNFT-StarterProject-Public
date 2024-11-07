@@ -45,4 +45,22 @@ final class ServicesAssembly {
              networkClient: networkClient
          )
      }
+    
+    var orderService: OrderService {
+        OrderServiceImpl(
+            networkClient: networkClient
+        )
+    }
+
+    var currencyService: CurrencesGetService {
+        CurrencesGetServiceImpl(
+            networkClient: networkClient
+        )
+    }
+    
+    var payService: PayService {
+        PayServiceImpl(
+            networkClient: networkClient
+        )
+    }
 }
