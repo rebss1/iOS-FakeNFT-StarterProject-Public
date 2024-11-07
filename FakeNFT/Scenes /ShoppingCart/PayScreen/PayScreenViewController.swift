@@ -49,8 +49,9 @@ final class PayScreenViewController: UIViewController {
         return label
     }()
     private lazy var payButton: UIButton = {
-        let button = Button(title: NSLocalizedString("Pay.pay", comment: "Оплатить"), style: .normal, color: .blackCustom)
-        button.addTarget(self, action: #selector(payButtonTapped), for: .touchUpInside)
+        let button = Button(title: NSLocalizedString("Pay.pay", comment: "Оплатить"), style: .normal, color: .blackCustom) { [weak self] in
+            self?.presenter.didTapPayButton()
+        }
         button.layer.borderWidth = 0
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -160,10 +161,6 @@ final class PayScreenViewController: UIViewController {
     
     @objc func bottomButtonTapped() {
         presenter.didTapWebViewButton()
-    }
-    
-    @objc func payButtonTapped() {
-        presenter.didTapPayButton()
     }
 }
 

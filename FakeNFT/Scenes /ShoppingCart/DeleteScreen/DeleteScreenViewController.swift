@@ -24,11 +24,10 @@ final class DeleteScreenViewController: UIViewController {
         return label
     }()
     private lazy var deleteButton: UIButton = {
-        let button = Button(title: NSLocalizedString("DeleteScreen.delete", comment: "Удалить"), style: .normal, color: .blackCustom) {
-            // TODO: сделать удаление
-            self.parentController?.deleteNft(id: self.id)
-            self.parentController?.deleteBLur()
-            self.dismiss(animated: true, completion: nil)
+        let button = Button(title: NSLocalizedString("DeleteScreen.delete", comment: "Удалить"), style: .normal, color: .blackCustom) { [weak self] in
+            self?.parentController?.deleteNft(id: self?.id ?? "")
+            self?.parentController?.deleteBLur()
+            self?.dismiss(animated: true, completion: nil)
         }
         button.setTitleColor(UIColor.redUniversal, for: .normal)
         button.layer.borderWidth = 0
@@ -36,9 +35,9 @@ final class DeleteScreenViewController: UIViewController {
         return button
     }()
     private lazy var backButton: UIButton = {
-        let button = Button(title: NSLocalizedString("DeleteScreen.back", comment: "Вернуться"), style: .normal, color: .blackCustom){
-            self.parentController?.deleteBLur()
-            self.dismiss(animated: true, completion: nil)
+        let button = Button(title: NSLocalizedString("DeleteScreen.back", comment: "Вернуться"), style: .normal, color: .blackCustom){ [weak self] in
+            self?.parentController?.deleteBLur()
+            self?.dismiss(animated: true, completion: nil)
         }
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.borderWidth = 0

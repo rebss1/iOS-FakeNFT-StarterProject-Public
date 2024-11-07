@@ -87,7 +87,7 @@ final class PayScreenPresenterImpl {
                 case .failure(let error):
                     state = .failed(error)
             }
-            self.group.leave()
+            group.leave()
         }
     }
     
@@ -111,21 +111,17 @@ final class PayScreenPresenterImpl {
     func putNftsInCart() {
         group.enter()
         orderService.sendOrderPutRequest(id: CartId.id, nfts: ["null"]) { [weak self] result in
-            guard let self = self else {
-                self?.group.leave()
-                return
-            }
             switch result {
                 case .success:
-                    self.view?.dismissScreen()
+                    self?.view?.dismissScreen()
                     let successScreen = SuccessViewController()
                     successScreen.modalPresentationStyle = .fullScreen
-                    presentView?.presentCollection(on: successScreen)
-                    presentView?.reloadData()
+                    self?.presentView?.presentCollection(on: successScreen)
+                    self?.presentView?.reloadData()
                 case .failure(let error):
-                    self.state = .failed(error)
+                    self?.state = .failed(error)
             }
-            self.group.leave()
+            self?.group.leave()
         }
     }
     
@@ -166,7 +162,6 @@ extension PayScreenPresenterImpl: PayScreenPresenter {
     
     func viewDidLoad() {
         self.state = .loading
-        
     }
 }
 

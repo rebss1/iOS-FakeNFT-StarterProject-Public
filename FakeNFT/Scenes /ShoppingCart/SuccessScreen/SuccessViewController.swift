@@ -16,8 +16,9 @@ protocol SuccessView: AnyObject {
 final class SuccessViewController: UIViewController {
         
     private lazy var button: UIButton = {
-        let button = Button(title: NSLocalizedString("Success.button", comment: "Вернуться в каталог"), style: .normal, color: .blackCustom)
-        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        let button = Button(title: NSLocalizedString("Success.button", comment: "Вернуться в каталог"), style: .normal, color: .blackCustom) { [weak self] in
+            self?.dismiss(animated: true)
+        }
         button.layer.borderWidth = 0
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -71,9 +72,5 @@ final class SuccessViewController: UIViewController {
         image.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         image.widthAnchor.constraint(equalToConstant: 278).isActive = true
         image.heightAnchor.constraint(equalToConstant: 278).isActive = true
-    }
-    
-    @objc func buttonTapped() {
-        dismiss(animated: true)
     }
 }

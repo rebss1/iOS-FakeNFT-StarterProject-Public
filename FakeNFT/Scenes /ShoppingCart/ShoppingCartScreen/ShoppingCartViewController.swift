@@ -66,11 +66,12 @@ final class ShoppingCartViewController: UIViewController {
         return label
     }()
     private lazy var bottomButton: UIButton = {
-        let button = Button(title: NSLocalizedString("Cart.pay", comment: "К оплате"), style: .normal, color: .blackCustom)
+        let button = Button(title: NSLocalizedString("Cart.pay", comment: "К оплате"), style: .normal, color: .blackCustom) { [weak self] in
+            self?.presenter.didTapPayButton()
+        }
         if let titleLabel = button.titleLabel {
             titleLabel.font = .bodyBold
         }
-        button.addTarget(self, action: #selector(showPayScreen), for: .touchUpInside)
         button.layer.borderWidth = 0
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -162,10 +163,6 @@ final class ShoppingCartViewController: UIViewController {
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         tableView.addSubview(activityIndicator)
         activityIndicator.constraintCenters(to: tableView)
-    }
-        
-    @objc func showPayScreen() {
-        presenter.didTapPayButton()
     }
     
     @objc func showActionSheet() {

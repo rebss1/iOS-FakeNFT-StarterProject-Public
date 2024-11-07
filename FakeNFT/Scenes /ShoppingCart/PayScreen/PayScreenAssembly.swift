@@ -7,7 +7,7 @@
 
 import UIKit
 
-public final class PayScreenAssembly {
+final class PayScreenAssembly {
 
     private let servicesAssembler: ServicesAssembly
 
@@ -16,7 +16,12 @@ public final class PayScreenAssembly {
     }
 
     func build(with input: PayScreenInput, view: ShoppingCartView) -> UIViewController {
-        let presenter = PayScreenPresenterImpl(view: view, id: input, servicesAssembly: servicesAssembler, orderService: servicesAssembler.orderService, currenciesService: servicesAssembler.currencyService, payService: servicesAssembler.payService)
+        let presenter = PayScreenPresenterImpl(view: view,
+                                               id: input,
+                                               servicesAssembly: servicesAssembler,
+                                               orderService: servicesAssembler.orderService,
+                                               currenciesService: servicesAssembler.currencyService,
+                                               payService: servicesAssembler.payService)
         let viewController = PayScreenViewController(presenter: presenter)
         presenter.view = viewController
         return viewController

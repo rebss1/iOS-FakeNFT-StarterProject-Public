@@ -108,7 +108,7 @@ final class ShoppingCartPresenterImpl {
                         }
                         self.state = .data(self.nfts)
                     case .failure(let error):
-                        state = .failed(error)
+                        self.state = .failed(error)
                 }
             }
             group.leave()
@@ -118,18 +118,14 @@ final class ShoppingCartPresenterImpl {
     func loadNftsInCart() {
         group.enter()
         orderService.sendOrderGetRequest() { [weak self] result in
-            guard let self = self else {
-                self?.group.leave()
-                return
-            }
             switch result {
                 case .success(let cart):
-                    nftsInCart = cart.nfts
-                    id = cart.id
-                    group.enter()
-                    self.loadNfts()
+                    self?.nftsInCart = cart.nfts
+                    self?.id = cart.id
+                    self?.group.enter()
+                    self?.loadNfts()
                 case .failure(let error):
-                    state = .failed(error)
+                    self?.state = .failed(error)
             }
         }
         group.leave()
@@ -139,15 +135,11 @@ final class ShoppingCartPresenterImpl {
         guard let id = id else { return }
         group.enter()
         orderService.sendOrderPutRequest(id: id, nfts: nftInCart) { [weak self] result in
-            guard let self = self else {
-                self?.group.leave()
-                return
-            }
             switch result {
                 case .success:
-                    self.reloadData()
+                    self?.reloadData()
                 case .failure(let error):
-                    self.state = .failed(error)
+                    self?.state = .failed(error)
             }
         }
         group.leave()
@@ -205,9 +197,9 @@ extension ShoppingCartPresenterImpl: ShoppingCartPresenter {
     }
     
     func deleteNft(id: String) {
-
+        
         nftsInCart.removeAll(where: { $0 == id })
-
+        
         if nftsInCart.isEmpty {
             group.enter()
             putNftsInCart(["null"])
