@@ -205,3 +205,6 @@
 
 **Демонстрация эпика каталог:**
 - https://www.loom.com/share/ef48e3e6cb7142258ee1efe4a5b400fa?sid=30a84059-e0b8-4a51-9aee-b3b07339214b
+
+**Демонстрация эпика профиль:**
+- https://www.loom.com/share/34de71066908440ba91e96b61bc0bb9e?sid=f2c5fbda-18e9-4e82-8460-c39e409bda95
