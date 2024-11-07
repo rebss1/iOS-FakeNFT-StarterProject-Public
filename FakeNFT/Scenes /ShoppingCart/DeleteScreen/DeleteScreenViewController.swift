@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class DeleteScreenViewController: UIViewController {
 
-    weak var parentController: ShoppingCartViewController?
+    var id: String
+    weak var parentController: ShoppingCartPresenter?
     private var centerImage: UIImageView
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -22,8 +24,10 @@ final class DeleteScreenViewController: UIViewController {
         return label
     }()
     private lazy var deleteButton: UIButton = {
-        let button = Button(title: NSLocalizedString("DeleteScreen.delete", comment: "Удалить"), style: .normal, color: .blackCustom) {
-            // TODO: сделать удаление
+        let button = Button(title: NSLocalizedString("DeleteScreen.delete", comment: "Удалить"), style: .normal, color: .blackCustom) { [weak self] in
+            self?.parentController?.deleteNft(id: self?.id ?? "")
+            self?.parentController?.deleteBLur()
+            self?.dismiss(animated: true, completion: nil)
         }
         button.setTitleColor(UIColor.redUniversal, for: .normal)
         button.layer.borderWidth = 0
@@ -31,17 +35,19 @@ final class DeleteScreenViewController: UIViewController {
         return button
     }()
     private lazy var backButton: UIButton = {
-        let button = Button(title: NSLocalizedString("DeleteScreen.back", comment: "Вернуться"), style: .normal, color: .blackCustom){
-            self.parentController?.deleteBLur()//TODO: перенести в presenter
-            self.dismiss(animated: true, completion: nil)
+        let button = Button(title: NSLocalizedString("DeleteScreen.back", comment: "Вернуться"), style: .normal, color: .blackCustom){ [weak self] in
+            self?.parentController?.deleteBLur()
+            self?.dismiss(animated: true, completion: nil)
         }
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.borderWidth = 0
         return button
     }()
     
-    init(image: UIImage) {
-        self.centerImage = UIImageView(image: image)
+    init(image: URL, id: String) {
+        self.id = id
+        self.centerImage = UIImageView()
+        self.centerImage.kf.setImage(with: image)
         super.init(nibName: nil, bundle: nil)
         setupUI()
     }

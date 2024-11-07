@@ -11,9 +11,6 @@ final class PayScreenCollectionViewCell: UICollectionViewCell, ReuseIdentifying 
     
     static let defaultReuseIdentifier = "CustomCell"
     private var isSelect = false
-    static private let namesOfImage = ["bitcoin","dogecoin","tether","apecoin","solana","etherium","cardano","shiba"]
-    static private let fullName = ["Bitcoin","Dogecoin","Tether","Apecoin","Solana","Ethereum","Cardano","Shiba Inu"]
-    static private let shortName = ["BTC","DOGE","USDT","APE","SOL","ETH","ADA","SHIB"]
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -26,6 +23,14 @@ final class PayScreenCollectionViewCell: UICollectionViewCell, ReuseIdentifying 
         label.font = .caption2
         label.textColor = .blackCustom
         return label
+    }()
+    private lazy var backView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .blackUniversal
+        view.layer.masksToBounds = true
+        view.layer.cornerRadius = 6
+        return view
     }()
     private lazy var valueLabel: UILabel = {
         let label = UILabel()
@@ -56,16 +61,23 @@ final class PayScreenCollectionViewCell: UICollectionViewCell, ReuseIdentifying 
     private func setupUI(){
         layer.masksToBounds = true
         layer.cornerRadius = 12
+        setupBackView()
         setupImage()
         setupLabel()
         setupValueLabel()
         setSelected(isSelect)
     }
     
+    private func setupBackView(){
+        contentView.addSubview(backView)
+        backView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12).isActive = true
+        backView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5).isActive = true
+        backView.widthAnchor.constraint(equalToConstant: 36).isActive = true
+        backView.heightAnchor.constraint(equalToConstant: 36).isActive = true
+    }
+    
     private func setupImage(){
-        contentView.addSubview(imageView)
-        imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12).isActive = true
-        imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5).isActive = true
+        backView.addSubview(imageView)
         imageView.widthAnchor.constraint(equalToConstant: 36).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 36).isActive = true
 
@@ -93,9 +105,9 @@ final class PayScreenCollectionViewCell: UICollectionViewCell, ReuseIdentifying 
         }
     }
     
-    func changeUI(number: Int) {
-        imageView.image = UIImage(named: PayScreenCollectionViewCell.namesOfImage[number])
-        label.text = PayScreenCollectionViewCell.fullName[number]
-        valueLabel.text = PayScreenCollectionViewCell.shortName[number]
+    func changeUI(with cellModel: PayScreenCellModel) {
+        imageView.kf.setImage(with: cellModel.image)
+        label.text = cellModel.title
+        valueLabel.text = cellModel.name
     }
 }
